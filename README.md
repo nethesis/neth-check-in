@@ -1,2 +1,2 @@
-# eventbrite-checkin
+# Eventbrite-checkin
 Eventbrite check-in interface
