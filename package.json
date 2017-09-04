@@ -1,0 +1,26 @@
+{
+  "name": "eventbrite-checkin",
+  "version": "1.0.0",
+  "description": "Eventbrite check-in interface",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nethesis/eventbrite-checkin.git"
+  },
+  "keywords": [
+    "eventbrite",
+    "check-in"
+  ],
+  "author": "Sebastian",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nethesis/eventbrite-checkin/issues"
+  },
+  "homepage": "https://github.com/nethesis/eventbrite-checkin#readme",
+  "dependencies": {
+    "express": "^4.15.4"
+  }
+}
