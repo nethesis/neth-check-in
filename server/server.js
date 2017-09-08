@@ -17,12 +17,6 @@ var server = app.listen(configs.NODEJS_PORT, configs.NODEJS_IP, function () {
     console.log('%s: Node server started on %s:%d ...', Date(Date.now()), configs.NODEJS_IP, configs.NODEJS_PORT);
 
     connection.init();
-    app.use(function (req, res, next) {
-        res.header("Access-Control-Allow-Origin", configs.ALLOWED_ORIGIN);
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        res.header('Access-Control-Allow-Methods', configs.ALLOWED_VERBS.join(','))
-        next();
-    });
     routes.configure(app);
 
     // init model table

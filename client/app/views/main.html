@@ -9,9 +9,9 @@
 <div ng-show="!isLoading && isError" class="ui negative message container error">
   <i class="close icon"></i>
   <div class="header">
-    We're sorry we can't apply that discount
+    Server request error 
   </div>
-  <p>That offer has expired
+  <p>Check server is running
   </p>
 </div>
 
@@ -70,14 +70,14 @@
 
           <table ng-table="tableParams" class="ui celled table dataTable" show-filter="true">
             <tr ng-repeat="user in $data">
-              <td title="'Nome evento'" class="single line" sortable="'evento'">
-                {{user.evento}}</td>
+              <!--<td title="'Nome Evento'" class="single line" sortable="'nome_evento'">
+                {{user.nome_evento}}</td>-->
               <td title="'Nome'" class="single line" filter="{ nome: 'text'}" sortable="'nome'">
                 {{user.nome}}</td>
               <td title="'Cognome'" class="single line" filter="{ cognome: 'text'}" sortable="'cognome'">
                 {{user.cognome}}</td>
               <td title="'Stato partecipante'" class="single line" filter="{ stato: 'text'}" sortable="'stato'">
-                <span ng-click="functionCheckin(user.stato)" class="{{user.stato == 'Stampa' ? 'orange action' : user.stato == 'Check-in eseguito' ? 'red' : 'green action'}}">{{user.stato}}</span></td>
+                <span ng-click="functionCheckin(user.stato,user.id)" class="{{user.stato == 'Stampa' ? 'orange action' : user.stato == 'Check-in eseguito' ? 'red' : 'green action'}}">{{user.stato}}</span></td>
             </tr>
           </table>
 

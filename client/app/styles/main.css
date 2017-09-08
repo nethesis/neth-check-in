@@ -1,144 +1,153 @@
 .browsehappy {
-  margin: 0.2em 0;
-  background: #ccc;
-  color: #000;
-  padding: 0.2em 0;
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
 }
 
 .table {
-  margin: 0 auto !important;
+    margin: 0 auto !important;
+}
+
+.menu {
+    display: none !important;
 }
 
 .dt-table {
-  margin: 0 auto !important;
-  margin-top: 45px !important;
-  margin-bottom: 0px !important;
+    margin: 0 auto !important;
+    margin-top: 30px !important;
+    margin-bottom: 0px !important;
 }
 
 .red {
-  color: red !important;
+    color: red !important;
 }
 
 .action {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .loaderfirst {
-  height: 100%;
-  width: 100%;
-  position: fixed !important;
-  z-index: 9999999;
-  margin-top: -15px !important;
-  border: none !important;
+    height: 100%;
+    width: 100%;
+    position: fixed !important;
+    z-index: 9999999;
+    margin-top: -15px !important;
+    border: none !important;
 }
 
 input {
-  margin: 0;
-  outline: 0;
-  -webkit-appearance: none;
-  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-  text-shadow: none;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 1.21428571em;
-  padding: .67857143em 1em;
-  font-size: 1em;
-  background: #fff;
-  border: 1px solid rgba(34, 36, 38, .15);
-  color: rgba(0, 0, 0, .87);
-  box-shadow: 0 0 0 0 transparent inset;
-  -webkit-transition: background-color .1s ease, color .1s ease, box-shadow .1s ease, border-color .1s ease;
-  transition: background-color .1s ease, color .1s ease, box-shadow .1s ease, border-color .1s ease;
-  border-radius: 500rem;
-  font-family: sans-serif;
-  -webkit-rtl-ordering: logical;
-  user-select: text;
-  cursor: auto;
-  outline-offset: -2px;
-  box-sizing: inherit;
-  text-rendering: auto;
-  color: initial;
-  letter-spacing: normal;
-  word-spacing: normal;
-  text-transform: none;
-  text-indent: 0px;
-  text-shadow: none;
-  display: inline-block;
-  text-align: start;
-  margin: 0em;
-  font: 13.3333px Arial;
-  -webkit-writing-mode: horizontal-tb;
+    margin: 0;
+    outline: 0;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+    text-shadow: none;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.21428571em;
+    padding: .67857143em 1em;
+    font-size: 1em;
+    background: #fff;
+    border: 1px solid rgba(34, 36, 38, .15);
+    color: rgba(0, 0, 0, .87);
+    box-shadow: 0 0 0 0 transparent inset;
+    -webkit-transition: background-color .1s ease, color .1s ease, box-shadow .1s ease, border-color .1s ease;
+    transition: background-color .1s ease, color .1s ease, box-shadow .1s ease, border-color .1s ease;
+    border-radius: 500rem;
+    font-family: sans-serif;
+    -webkit-rtl-ordering: logical;
+    user-select: text;
+    cursor: auto;
+    outline-offset: -2px;
+    box-sizing: inherit;
+    text-rendering: auto;
+    color: initial;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: start;
+    margin: 0em;
+    font: 13.3333px Arial;
+    -webkit-writing-mode: horizontal-tb;
 }
 
 .pagination {
-  font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
-  background: #fff;
-  font-weight: 400;
-  border: 1px solid rgba(34, 36, 38, .15);
-  border-radius: .28571429rem;
-  float: right;
-  padding: 0px !important;
+    font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    background: #fff;
+    font-weight: 400;
+    border: 1px solid rgba(34, 36, 38, .15);
+    border-radius: .28571429rem;
+    float: right;
+    padding: 0px !important;
+}
+
+.mobile {
+    display: none !important;
+    visibility: hidden !important;
 }
 
 .pagination li:last-child:before {
-  display: none !important;
+    display: none !important;
 }
 
 .ng-table-counts {
-  margin-top: 14px;
+    margin-top: 14px;
 }
 
 .ng-table-counts button {
-  background-color: white;
-  border-radius: .28571429rem;
-  border: 1px solid #dedede;
-  margin-right: 5px;
-  height: 39px;
-  width: 41px;
+    background-color: white;
+    border-radius: .28571429rem;
+    border: 1px solid #dedede;
+    margin-right: 5px;
+    height: 39px;
+    width: 41px;
 }
 
 .pagination li {
-  position: relative;
-  vertical-align: middle;
-  line-height: 1;
-  text-decoration: none;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-box-flex: 0;
-  -ms-flex: 0 0 auto;
-  flex: 0 0 auto;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  background: 0 0;
-  text-transform: none;
-  padding: .92857143em 1.14285714em !important;
-  color: rgba(0, 0, 0, .87);
-  font-weight: 400;
-  -webkit-transition: background .1s ease, box-shadow .1s ease, color .1s ease;
-  transition: background .1s ease, box-shadow .1s ease, color .1s ease;
-  min-width: 3em;
-  text-align: center;
-  display: flex;
-  -webkit-box-align: center;
-  align-items: center;
-  font-size: 1rem;
-  -webkit-box-direction: normal;
-  display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    line-height: 1;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background: 0 0;
+    text-transform: none;
+    padding: .92857143em 1.14285714em !important;
+    color: rgba(0, 0, 0, .87);
+    font-weight: 400;
+    -webkit-transition: background .1s ease, box-shadow .1s ease, color .1s ease;
+    transition: background .1s ease, box-shadow .1s ease, color .1s ease;
+    min-width: 3em;
+    text-align: center;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    font-size: 1rem;
+    -webkit-box-direction: normal;
+    display: inline-block;
 }
 
 .pagination li:before {
-  position: absolute;
-  content: '';
-  top: 0;
-  right: 0;
-  height: 100%;
-  width: 1px;
-  background: rgba(34, 36, 38, .1);
+    position: absolute;
+    content: '';
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 1px;
+    background: rgba(34, 36, 38, .1);
 }
 
 .pagination>li>a {
-  color: rgba(0, 0, 0, .95);
+    color: rgba(0, 0, 0, .95);
 }
 
 .cont {
@@ -146,126 +155,126 @@ input {
 }
 
 .pagination>li>a:focus {
-  color: #93b6db;
+    color: #93b6db;
 }
 
 .ng-table-counts {
-  float: left;
+    float: left;
 }
 
 input:focus {
-  border-color: rgba(34, 36, 38, .35);
-  background: #fff;
-  color: rgba(0, 0, 0, .95);
+    border-color: rgba(34, 36, 38, .35);
+    background: #fff;
+    color: rgba(0, 0, 0, .95);
 }
 
 .ng-table th.filter .input-filter {
-  height: 33px;
-  font-weight: 200 !important;
+    height: 33px;
+    font-weight: 200 !important;
 }
 
 .orange {
-  color: orange !important;
+    color: orange !important;
 }
 
 .green {
-  color: green;
+    color: green;
 }
 
 .ui .message {
-  width: 100% !important;
+    width: 100% !important;
 }
 
 .ui.message h1.ui.header {
-  font-size: 3em !important;
+    font-size: 3em !important;
 }
 
 .ui.message .header {
-  display: table-cell !important;
+    display: table-cell !important;
 }
 
 body {
-  padding: 0;
+    padding: 0;
 }
 
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
 
 .header, .marketing, .footer {
-  padding-left: 15px;
-  padding-right: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 
 /* Custom page header */
 
 .header {
-  border-bottom: 1px solid #e5e5e5;
-  margin-bottom: 10px;
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 10px;
 }
 
 
 /* Make the masthead heading the same height as the navigation */
 
 .header h3 {
-  margin-top: 0;
-  margin-bottom: 0;
-  line-height: 40px;
-  padding-bottom: 19px;
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 40px;
+    padding-bottom: 19px;
 }
 
 
 /* Custom page footer */
 
 .footer {
-  padding-top: 19px;
-  color: #777;
-  border-top: 1px solid #e5e5e5;
+    padding-top: 19px;
+    color: #777;
+    border-top: 1px solid #e5e5e5;
 }
 
 .container-narrow>hr {
-  margin: 30px 0;
+    margin: 30px 0;
 }
 
 
 /* Main marketing message and sign up button */
 
 .jumbotron {
-  text-align: center;
-  border-bottom: 1px solid #e5e5e5;
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .jumbotron .btn {
-  font-size: 21px;
-  padding: 14px 24px;
+    font-size: 21px;
+    padding: 14px 24px;
 }
 
 
 /* Supporting marketing content */
 
 .marketing {
-  margin: 40px 0;
+    margin: 40px 0;
 }
 
 .marketing p+h4 {
-  margin-top: 28px;
+    margin-top: 28px;
 }
 
 
 /* Responsive: Portrait tablets and up */
 
 @media screen and (min-width: 768px) {
-  /* Remove the padding we set earlier */
-  .header, .marketing, .footer {
-    padding-left: 0;
-    padding-right: 0;
-  }
-  /* Space out the masthead */
-  .header {
-    margin-bottom: 30px;
-  }
-  /* Remove the bottom border on the jumbotron for visual effect */
-  .jumbotron {
-    border-bottom: 0;
-  }
+    /* Remove the padding we set earlier */
+    .header, .marketing, .footer {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    /* Space out the masthead */
+    .header {
+        margin-bottom: 30px;
+    }
+    /* Remove the bottom border on the jumbotron for visual effect */
+    .jumbotron {
+        border-bottom: 0;
+    }
 }

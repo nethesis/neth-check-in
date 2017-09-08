@@ -3,11 +3,11 @@ var connection = require('../db/connection');
 function City() {
     this.getAll = function (res) {
         connection.acquire(function (err, con) {
-            con.query('SELECT * FROM city', function (err, result) {
+            con.query('SELECT * FROM iscritti', function (err, result) {
                 con.release();
                 if (err) {
                     res.status(500).json({
-                        message: 'Get all cities failed: ' + err
+                        message: 'Db select error: ' + err
                     });
                 } else {
                     res.status(200).json(result);
@@ -16,16 +16,19 @@ function City() {
         });
     };
 
-    this.get = function (id, res) {
+    this.updateStatus = function (id, res) {
         connection.acquire(function (err, con) {
-            con.query('SELECT * FROM city where id = ?', [id], function (err, result) {
+            con.query('UPDATE iscritti SET stato="Stampa" WHERE id =' + id, function (err, result) {
                 con.release();
                 if (err) {
                     res.status(500).json({
-                        message: 'Get city with id ' + id + ' failed: ' + err
+                        message: 'City creation failed: ' + err
                     });
                 } else {
-                    res.status(200).json(result);
+                    res.status(201).json({
+                        message: 'City created successfully',
+                        id: result.insertId
+                    });
                 }
             });
         });
