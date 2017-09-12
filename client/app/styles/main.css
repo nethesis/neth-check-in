@@ -23,6 +23,11 @@
     color: red !important;
 }
 
+.hidden {
+    display: none !important;
+    visibility: hidden;
+}
+
 .action {
     cursor: pointer;
 }

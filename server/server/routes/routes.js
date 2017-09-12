@@ -16,7 +16,11 @@ module.exports = {
         });
 
         app.get('/checkin/:id', function(req, res) {
-            city.updateStatus(req.params.id, res);
+            city.updateStatus(req.params.id, "Stampa", res);
+        });
+
+        app.get('/printed/:id', function(req, res) {
+            city.updateStatus(req.params.id, "Check-in eseguito", res);
         });
 
         app.post('/city/', function(req, res) {

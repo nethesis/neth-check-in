@@ -1,134 +1,137 @@
-
-  <div ng-show="isLoading" class="ui segment loaderfirst">
+<div ng-show="isLoading" class="ui segment loaderfirst">
     <p></p>
     <div class="ui active inverted dimmer">
-      <div class="ui loader"></div>
+        <div class="ui loader"></div>
     </div>
-  </div>
+</div>
 
 <div ng-show="!isLoading && isError" class="ui negative message container error">
-  <i class="close icon"></i>
-  <div class="header">
-    Server request error 
-  </div>
-  <p>Check server is running
-  </p>
+    <i class="close icon"></i>
+    <div class="header">
+        Server request error
+    </div>
+    <p>Check server is running
+    </p>
 </div>
 
 <div ng-show="!isLoading && !isError" class="ui grid container cont">
-  <div class="tablet mobile only row">
-    <div class="ui borderless huge fluid menu">
-      <a class="header item"> Project Name</a>
-      <div class="right menu">
-        <a class="menu item">
-          <div class="ui basic icon toggle button">
-            <i class="content icon"></i>
-          </div>
-        </a>
-      </div>
-    </div>
-    <div class="ui vertical accordion borderless fluid menu">
-      <a class="active item"> Home</a><a class="item"> About</a><a class="item"> Contact</a>
-      <div class="item">
-        <div class="title">
-          Dropdown<i class="dropdown icon"></i>
+    <div class="tablet mobile only row">
+        <div class="ui borderless huge fluid menu">
+            <a class="header item"> Project Name</a>
+            <div class="right menu">
+                <a class="menu item">
+                    <div class="ui basic icon toggle button">
+                        <i class="content icon"></i>
+                    </div>
+                </a>
+            </div>
         </div>
-        <div class="content">
-          <div class="item">
-            Action
-          </div>
-          <div class="item">
-            Another action
-          </div>
-          <div class="item">
-            Something else here
-          </div>
-          <div class="ui divider"></div>
-          <div class="header item">
-            Navbar header
-          </div>
-          <div class="item">
-            Seperated link
-          </div>
-          <div class="item">
-            One more seperated link
-          </div>
+        <div class="ui vertical accordion borderless fluid menu">
+            <a class="active item"> Home</a><a class="item"> About</a><a class="item"> Contact</a>
+            <div class="item">
+                <div class="title">
+                    Dropdown<i class="dropdown icon"></i>
+                </div>
+                <div class="content">
+                    <div class="item">
+                        Action
+                    </div>
+                    <div class="item">
+                        Another action
+                    </div>
+                    <div class="item">
+                        Something else here
+                    </div>
+                    <div class="ui divider"></div>
+                    <div class="header item">
+                        Navbar header
+                    </div>
+                    <div class="item">
+                        Seperated link
+                    </div>
+                    <div class="item">
+                        One more seperated link
+                    </div>
+                </div>
+            </div>
+            <div class="ui divider"></div>
+            <a class="active item" href="#">Default</a><a class="item" href="/templates/bootstrap/navbar-static-top/">Static top</a><a class="item" href="/templates/bootstrap/navbar-fixed-top/">Fixed top</a>
         </div>
-      </div>
-      <div class="ui divider"></div>
-      <a class="active item" href="#">Default</a><a class="item" href="/templates/bootstrap/navbar-static-top/">Static top</a><a class="item" href="/templates/bootstrap/navbar-fixed-top/">Fixed top</a>
     </div>
-  </div>
-  <div class="row">
-    <div class="ui message">
-      <h1 class="ui huge header">
+    <div class="row">
+        <div class="ui message">
+            <h1 class="ui huge header">
             Neth Check-in
         </h1>
 
-      <div class="row dt-table">
-        <div class="sixteen wide column">
+            <div class="row dt-table">
+                <div class="sixteen wide column">
 
-          <table ng-table="tableParams" class="ui celled table dataTable" show-filter="true">
-            <tr ng-repeat="user in $data">
-              <!--<td title="'Nome Evento'" class="single line" sortable="'nome_evento'">
+                    <table ng-table="tableParams" class="ui celled table dataTable" show-filter="true">
+                        <tr ng-repeat="user in $data">
+                            <!--<td title="'Nome Evento'" class="single line" sortable="'nome_evento'">
                 {{user.nome_evento}}</td>-->
-              <td title="'Nome'" class="single line" filter="{ nome: 'text'}" sortable="'nome'">
-                {{user.nome}}</td>
-              <td title="'Cognome'" class="single line" filter="{ cognome: 'text'}" sortable="'cognome'">
-                {{user.cognome}}</td>
-              <td title="'Stato partecipante'" class="single line" filter="{ stato: 'text'}" sortable="'stato'">
-                <span ng-click="functionCheckin(user.stato,user.id)" class="{{user.stato == 'Stampa' ? 'orange action' : user.stato == 'Check-in eseguito' ? 'red' : 'green action'}}">{{user.stato}}</span></td>
-            </tr>
-          </table>
+                            <td title="'Nome'" class="single line" filter="{ nome: 'text'}" sortable="'nome'">
+                                {{user.nome}}</td>
+                            <td title="'Cognome'" class="single line" filter="{ cognome: 'text'}" sortable="'cognome'">
+                                {{user.cognome}}</td>
+                            <td title="'Stato partecipante'" class="single line" filter="{ stato: 'text'}" sortable="'stato'">
+                                <span ng-click="functionCheckin(user.stato,user.id,user.nome,user.cognome,user.agency)" class="{{user.stato == 'Stampa' ? 'orange action' : user.stato == 'Check-in eseguito' ? 'red' : 'green action'}}">{{user.stato}}</span>
+                                <i
+                                    ng-click="functionRePrint(user.id)" style="float: right; color:red;    color: #ababab; cursor:pointer;" class="{{user.stato == 'Stampa' ? 'hidden' : user.stato == 'Check-in eseguito' ? 'show' : 'hidden'}} minus square outline icon"></i>
+                            </td>
+                        </tr>
+                    </table>
 
+                </div>
+            </div>
         </div>
-      </div>
-
-
+        <div id="urlPhp" style="width: 100%; text-align: right; padding-right:15px;"></div>
     </div>
-  </div>
 </div>
 
+
+
 <style type="text/css">
-  .ui.borderless.huge.menu {
-    background-color: #f8f8f8;
-  }
+    .ui.borderless.huge.menu {
+        background-color: #f8f8f8;
+    }
 
-  .ui.borderless.huge.menu .header.item {
-    font-size: 1.2em;
-  }
+    .ui.borderless.huge.menu .header.item {
+        font-size: 1.2em;
+    }
 
-  .ui.vertical.menu {
-    display: none;
-    background-color: #f8f8f8;
-  }
+    .ui.vertical.menu {
+        display: none;
+        background-color: #f8f8f8;
+    }
 
-  .ui.vertical.menu .item .title .dropdown.icon {
-    float: none;
-  }
+    .ui.vertical.menu .item .title .dropdown.icon {
+        float: none;
+    }
 
-  .ui.vertical.menu .item .content .item {
-    padding: 0.5em 1em;
-  }
+    .ui.vertical.menu .item .content .item {
+        padding: 0.5em 1em;
+    }
 
-  .ui.vertical.menu .header.item {
-    text-transform: uppercase;
-  }
+    .ui.vertical.menu .header.item {
+        text-transform: uppercase;
+    }
 
-  .ui.message {
-    background-color: rga(238, 238, 238);
-    box-shadow: none;
-    padding: 5em 4em;
-  }
+    .ui.message {
+        background-color: rga(238, 238, 238);
+        box-shadow: none;
+        padding: 5em 4em;
+    }
 
-  .ui.message h1.ui.header {
-    font-size: 4.5em;
-  }
+    .ui.message h1.ui.header {
+        font-size: 4.5em;
+    }
 
-  .ui.message p.lead {
-    font-size: 1.3em;
-    color: #333333;
-    line-height: 1.4;
-    font-weight: 300;
-  }
+    .ui.message p.lead {
+        font-size: 1.3em;
+        color: #333333;
+        line-height: 1.4;
+        font-weight: 300;
+    }
 </style>

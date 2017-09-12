@@ -1,9 +1,14 @@
 var connection = require('../db/connection');
+var parent;
+
+function setParent(p) {
+    parent = p;
+}
 
 function City() {
-    this.getAll = function (res) {
-        connection.acquire(function (err, con) {
-            con.query('SELECT * FROM iscritti', function (err, result) {
+    this.getAll = function(res) {
+        connection.acquire(function(err, con) {
+            con.query('SELECT * FROM iscritti', function(err, result) {
                 con.release();
                 if (err) {
                     res.status(500).json({
@@ -16,34 +21,38 @@ function City() {
         });
     };
 
-    this.updateStatus = function (id, res) {
-        connection.acquire(function (err, con) {
-            con.query('UPDATE iscritti SET stato="Stampa" WHERE id =' + id, function (err, result) {
+    this.updateStatus = function(id, stat, res) {
+        connection.acquire(function(err, con) {
+            con.query('UPDATE iscritti SET stato="' + stat + '" WHERE id =' + id, function(err, result) {
                 con.release();
                 if (err) {
                     res.status(500).json({
                         message: 'City creation failed: ' + err
                     });
                 } else {
+
                     res.status(201).json({
                         message: 'City created successfully',
                         id: result.insertId
                     });
+
+                    parent.socket.emit('iscrittiUpdate');
+
                 }
             });
         });
     };
 
-    this.create = function (city, res) {
-        connection.acquire(function (err, con) {
-            con.query('SELECT * FROM city WHERE formatted_address = ?', city.formatted_address, function (err, result) {
+    this.create = function(city, res) {
+        connection.acquire(function(err, con) {
+            con.query('SELECT * FROM city WHERE formatted_address = ?', city.formatted_address, function(err, result) {
                 if (err) {
                     res.status(500).json({
                         message: 'City creation failed: ' + err
                     });
                 } else {
                     if (result.length > 0) {
-                        con.query('UPDATE city SET ? WHERE id = ?', [city, result[0].id], function (err, result) {
+                        con.query('UPDATE city SET ? WHERE id = ?', [city, result[0].id], function(err, result) {
                             con.release();
                             if (err) {
                                 res.status(500).json({
@@ -57,7 +66,7 @@ function City() {
                             }
                         });
                     } else {
-                        con.query('INSERT INTO city SET ?', city, function (err, result) {
+                        con.query('INSERT INTO city SET ?', city, function(err, result) {
                             con.release();
                             if (err) {
                                 res.status(500).json({
@@ -76,9 +85,9 @@ function City() {
         });
     };
 
-    this.update = function (id, city, res) {
-        connection.acquire(function (err, con) {
-            con.query('UPDATE city SET ? WHERE id = ?', [city, id], function (err, result) {
+    this.update = function(id, city, res) {
+        connection.acquire(function(err, con) {
+            con.query('UPDATE city SET ? WHERE id = ?', [city, id], function(err, result) {
                 con.release();
                 if (err) {
                     res.status(500).json({
@@ -93,9 +102,9 @@ function City() {
         });
     };
 
-    this.delete = function (id, res) {
-        connection.acquire(function (err, con) {
-            con.query('DELETE FROM city WHERE id = ?', [id], function (err, result) {
+    this.delete = function(id, res) {
+        connection.acquire(function(err, con) {
+            con.query('DELETE FROM city WHERE id = ?', [id], function(err, result) {
                 con.release();
                 if (err) {
                     res.status(500).json({
@@ -110,8 +119,8 @@ function City() {
         });
     };
 
-    this.initTable = function () {
-        connection.acquire(function (err, con) {
+    this.initTable = function() {
+        connection.acquire(function(err, con) {
             if (err) throw err;
             con.query([
                 'CREATE TABLE IF NOT EXISTS `city` (',
@@ -123,7 +132,7 @@ function City() {
                 '`lng` DECIMAL(16,14) NOT NULL,',
                 'PRIMARY KEY (`id`)',
                 ') ENGINE=InnoDB DEFAULT CHARSET=utf8'
-            ].join(' '), function (err, result) {
+            ].join(' '), function(err, result) {
                 if (err) throw err;
 
                 if (!result.warningCount)
@@ -137,3 +146,4 @@ function City() {
 }
 
 module.exports = new City();
+module.exports.setParent = setParent;
