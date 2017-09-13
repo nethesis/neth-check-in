@@ -13,8 +13,9 @@ angular.module('nethCheckInApp')
         $scope.isLoading = true;
         $scope.isError = false;
         $scope.tableParams = undefined;
+        $scope.ipServer = 'http://192.168.122.82:8080';
 
-        $http.get('http://192.168.122.82:8080/iscritti').then(function(successData) {
+        $http.get($scope.ipServer + '/iscritti').then(function(successData) {
             // get raw data from server
             $scope.data = successData.data;
 
@@ -39,7 +40,7 @@ angular.module('nethCheckInApp')
 
         socket.on("iscrittiUpdate", function() {
             console.log("EVENT");
-            $http.get('http://192.168.122.82:8080/iscritti').then(function(successData) {
+            $http.get($scope.ipServer + '/iscritti').then(function(successData) {
                 // get raw data from server
                 $scope.data = successData.data;
                 $scope.tableParams = new NgTableParams({
@@ -59,7 +60,7 @@ angular.module('nethCheckInApp')
         $scope.functionCheckin = function(stato, id, name, surname, agency) {
             if (stato == "Partecipante") {
 
-                $http.get('http://192.168.122.82:8080/checkin/' + id).then(function(successData) {
+                $http.get($scope.ipServer + '/checkin/' + id).then(function(successData) {
 
                 }, function(errorData) {
 
@@ -76,7 +77,7 @@ angular.module('nethCheckInApp')
                 myWindow.focus();
                 myWindow.print();
                 myWindow.close();
-                $http.get('http://192.168.122.82:8080/printed/' + id).then(function(successData) {
+                $http.get($scope.ipServer + '/printed/' + id).then(function(successData) {
 
                 }, function(errorData) {
 
@@ -88,7 +89,7 @@ angular.module('nethCheckInApp')
         $scope.functionRePrint = function(id) {
 
             if (confirm("Verrà ripristinata la stampa per l'utente selezionato") == true) {
-                $http.get('http://192.168.122.82:8080/checkin/' + id).then(function(successData) {
+                $http.get($scope.ipServer + '/checkin/' + id).then(function(successData) {
 
                 }, function(errorData) {
 
