@@ -10,11 +10,8 @@ var city = require('./server/models/city');
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-var parent = {
-    socket: null
-};
 
-city.setParent(parent);
+city.setParent(io);
 
 app.use(bodyparser.urlencoded({
     extended: true
@@ -38,7 +35,7 @@ server.listen(configs.NODEJS_PORT, configs.NODEJS_IP, function() {
     });
 
     io.on('connection', function(socket) {
-        parent.socket = socket;
+        console.log(socket);
     });
 
 });

@@ -1,8 +1,8 @@
 var connection = require('../db/connection');
 var parent;
 
-function setParent(p) {
-    parent = p;
+function setParent(io) {
+    parent = io;
 }
 
 function City() {
@@ -36,7 +36,7 @@ function City() {
                         id: result.insertId
                     });
 
-                    parent.socket.emit('iscrittiUpdate');
+                    parent.emit('iscrittiUpdate');
 
                 }
             });

@@ -102,7 +102,5 @@ angular.module('nethCheckInApp')
 
         $scope.baseUrl = "https://" + $location.host() + "/phpmyadmin/sql.php?db=nethcheckin&table=iscritti";
         document.getElementById("urlPhp").innerHTML="<a style='color:#bdbdbd;' target='blank' href='" + $scope.baseUrl + "'>Importa .csv</a>";
-        console.log($scope.baseUrl);
-        console.log("SOCKET IS : " + socket);
 
     });
