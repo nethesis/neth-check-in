@@ -9,7 +9,9 @@ Client and Server for Nethesis partner meeting badges 2017
 - Install phpmyadmin (https://wiki.nethserver.org/doku.php?id=phpmyadmin)
 - Clone repository
 - `npm install`
-- Move in client dir and run ` npm install`
+- `npm install -g grunt-cli`
+- `config set neth-check-in service status enabled TCPPort 9000,8080 access green,red`
+- `signal-event runlevel-adjust; signal-event firewall-adjust`
 - Change $scope.ipServer var with the server location ip addr in app/scripts/controllers/main.js and 
 - Replace socket url in app/index.html
 - **Run** client: `grunt server`  in client directory
@@ -28,5 +30,5 @@ Client and Server for Nethesis partner meeting badges 2017
  3. Column separated with `,` 
  4. Column escaped and enclose with empty 
  5. Lines terminated with `auto` 
- 6. Columns: ordine, nome, cognome, stato, agency
+ 6. Column name: ordine, nome, cognome, stato, agency
 - Run server with` node server.js`
