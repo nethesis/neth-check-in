@@ -13,6 +13,17 @@
     display: none !important;
 }
 
+.butto {
+    float: right;
+margin-top: -46px !important; 
+margin-right: 0px !important;
+}
+
+.newser {
+    margin-top: 48px;
+margin-bottom: 40px;
+}
+
 .dt-table {
     margin: 0 auto !important;
     margin-top: 30px !important;

@@ -31,7 +31,28 @@
         <div class="ui message">
             <h1 class="ui huge header">
             Neth Check-in
-        </h1>
+            </h1>
+
+            <button ng-click="showNewForm()" class="ui basic icon button item big tiny-margin-top ng-scope butto" data-tooltip="Nuovo partecipante" data-position="left center"> <i class="add user icon"></i> </button><br>
+
+
+            <div ng-if="newUser" class="ui large form newser">
+                <div class="three fields">
+                    <div class="field">
+                        <label>Nome</label>
+                        <input type="text" placeholder="Inserisci il nome">
+                    </div>
+                    <div class="field">
+                        <label>Cognome</label>
+                        <input type="text" placeholder="Inserisci il cognome">
+                    </div>
+                    <div class="field">
+                        <label>Azienda</label>
+                        <input type="text" placeholder="Inserisci il nome dell' azienda">
+                    </div>
+                </div>
+                <div class="ui medium primary button"><i class="save icon"></i> Salva</div>
+            </div>
 
             <div class="row dt-table">
                 <div class="sixteen wide column">

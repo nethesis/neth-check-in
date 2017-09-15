@@ -13,6 +13,7 @@ angular.module('nethCheckInApp')
         $scope.isLoading = true;
         $scope.isError = false;
         $scope.tableParams = undefined;
+        $scope.newUser = undefined;
         $scope.ipServer = 'http://192.168.122.82:8080';
 
         $http.get($scope.ipServer + '/iscritti').then(function(successData) {
@@ -44,8 +45,8 @@ angular.module('nethCheckInApp')
 
         socket.on("iscrittiUpdate", function() {
             console.log("EVENT");
-        
-            
+
+
             $http.get($scope.ipServer + '/iscritti').then(function(successData) {
                 // get raw data from server
                 $scope.data = successData.data;
@@ -91,7 +92,15 @@ angular.module('nethCheckInApp')
 
         }
 
+        $scope.showNewForm = function() {
+            if ($scope.newUser) {
+                $scope.newUser = false;
+            } else {
+                $scope.newUser = true;
+            }
+        }
+
         $scope.baseUrl = "https://" + $location.host() + "/phpmyadmin/sql.php?db=nethcheckin&table=iscritti";
-        document.getElementById("urlPhp").innerHTML = "<a style='color:#bdbdbd;' target='blank' href='" + $scope.baseUrl + "'>Importa .csv</a>";
+        document.getElementById("urlPhp").innerHTML = "<a style='display: none; color:#bdbdbd;' target='blank' href='" + $scope.baseUrl + "'>Importa .csv</a>";
 
     });
