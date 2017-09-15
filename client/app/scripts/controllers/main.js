@@ -14,7 +14,7 @@ angular.module('nethCheckInApp')
         $scope.isError = false;
         $scope.tableParams = undefined;
         $scope.newUser = undefined;
-        $scope.ipServer = 'http://192.168.122.82:8080';
+        $scope.ipServer = 'http://192.168.5.219:8080';
 
         $http.get($scope.ipServer + '/iscritti').then(function(successData) {
             // get raw data from server
@@ -74,12 +74,14 @@ angular.module('nethCheckInApp')
                 agency = "";
             }
 
-            var myWindow = window.open('', '');
-            myWindow.document.write('<div style="width:340px;background: white;height:215px;"><div style=" width: 100%; padding-left: 20px; font-weight: 600; margin-top: 68px; font-size: 43px; font-family: sans-serif; ">' + name + '</div><div style=" width: 100%; padding-left: 20px; font-weight: 500; font-size: 27px; font-family: sans-serif; ">' + surname + '</div><div style=" width: 100%; font-family: sans-serif; padding-left: 20px; font-size: 20px; margin-top: 25px; font-weight: 600; ">' + agency + '</div></div>');
-            myWindow.document.close();
-            myWindow.focus();
-            myWindow.print();
-            myWindow.close();
+            $scope.doc = new jsPDF("h1","mm",[29,31]);
+
+            $scope.doc.text(name, 1, 8);
+            $scope.doc.text(surname, 1, 16)
+            $scope.doc.text(agency, 1, 27);
+            $scope.doc.autoPrint();
+            $scope.mywindow = window.open($scope.doc.output('bloburl'), '_blank');
+
         }
 
         $scope.functionRePrint = function(id) {
