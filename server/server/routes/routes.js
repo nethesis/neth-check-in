@@ -16,7 +16,7 @@ module.exports = {
         });
 
         app.get('/checkin/:id', function(req, res) {
-            city.updateStatus(req.params.id, "Stampa", res);
+            city.updateStatus(req.params.id, "Partecipante", res);
         });
 
         app.get('/printed/:id', function(req, res) {

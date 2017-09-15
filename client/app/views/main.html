@@ -26,37 +26,6 @@
                 </a>
             </div>
         </div>
-        <div class="ui vertical accordion borderless fluid menu">
-            <a class="active item"> Home</a><a class="item"> About</a><a class="item"> Contact</a>
-            <div class="item">
-                <div class="title">
-                    Dropdown<i class="dropdown icon"></i>
-                </div>
-                <div class="content">
-                    <div class="item">
-                        Action
-                    </div>
-                    <div class="item">
-                        Another action
-                    </div>
-                    <div class="item">
-                        Something else here
-                    </div>
-                    <div class="ui divider"></div>
-                    <div class="header item">
-                        Navbar header
-                    </div>
-                    <div class="item">
-                        Seperated link
-                    </div>
-                    <div class="item">
-                        One more seperated link
-                    </div>
-                </div>
-            </div>
-            <div class="ui divider"></div>
-            <a class="active item" href="#">Default</a><a class="item" href="/templates/bootstrap/navbar-static-top/">Static top</a><a class="item" href="/templates/bootstrap/navbar-fixed-top/">Fixed top</a>
-        </div>
     </div>
     <div class="row">
         <div class="ui message">
@@ -67,18 +36,25 @@
             <div class="row dt-table">
                 <div class="sixteen wide column">
 
-                    <table ng-table="tableParams" class="ui celled table dataTable" show-filter="true">
-                        <tr ng-repeat="user in $data">
+                    <div style="margin-bottom: 15px; margin-top:20px;" class="ui large fluid icon input">
+                        <input type="text" ng-model="search.term" ng-click="tableParams.sorting({})" placeholder="Ricerca per nome, cognome, e-mail e azienda...">
+                        <i class="search icon"></i>
+                    </div>
+
+                    <table ng-table="tableParams" class="ui celled table dataTable">
+                        <tr ng-repeat="user in $data | filter:search.term">
                             <!--<td title="'Nome Evento'" class="single line" sortable="'nome_evento'">
                 {{user.nome_evento}}</td>-->
-                            <td title="'Nome'" class="single line" filter="{ nome: 'text'}" sortable="'nome'">
+                            <td title="'Nome'" class="single line" sortable="'nome'">
                                 {{user.nome}}</td>
-                            <td title="'Cognome'" class="single line" filter="{ cognome: 'text'}" sortable="'cognome'">
+                            <td title="'Cognome'" class="single line" sortable="'cognome'">
                                 {{user.cognome}}</td>
-                            <td title="'Stato partecipante'" class="single line" filter="{ stato: 'text'}" sortable="'stato'">
-                                <span ng-click="functionCheckin(user.stato,user.id,user.nome,user.cognome,user.agency)" class="{{user.stato == 'Stampa' ? 'orange action' : user.stato == 'Check-in eseguito' ? 'red' : 'green action'}}">{{user.stato}}</span>
-                                <i
-                                    ng-click="functionRePrint(user.id)" style="float: right; color:red;    color: #ababab; cursor:pointer;" class="{{user.stato == 'Stampa' ? 'hidden' : user.stato == 'Check-in eseguito' ? 'show' : 'hidden'}} minus square outline icon"></i>
+                            <td title="'E-mail'" class="single line" sortable="'email'">
+                                {{user.email}}</td>
+                            <td title="'Azienda'" class="single line" sortable="'agency'">
+                                {{user.agency}}</td>
+                            <td style="width: 258px;" title="'Stato'" class="single line" sortable="'stato'">
+                                <span class="{{user.stato == 'Check-in eseguito' ? 'red' : 'green action'}}"><button ng-click="functionCheckin(user.stato,user.id,user.nome,user.cognome,user.agency)" class="ui blue button medium {{user.stato == 'Check-in eseguito' ? 'hidden' : 'show'}}">Esegui check-in</button><div class="ui buttons {{user.stato == 'Check-in eseguito' ? 'show' : 'hidden'}}"><button class="ui button disabled medium">Check-in eseguito</button><button ng-click="functionRePrint(user.id)" class="ui positive button yellow medium">Ripristina</button></div></span>
                             </td>
                         </tr>
                     </table>

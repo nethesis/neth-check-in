@@ -21,7 +21,7 @@ Client and Server for Nethesis partner meeting badges 2017
 - Requires mysql and node already installed
 - `npm install`
 - Create database **nethcheckin** in https://ip/phpmyadmin log with mysql user and pass
-- Import db nethcheckin.sql 
+- Import db/nethcheckin.sql 
 - Modify config.js in config dir with database user and pass
 - Export Atendees from csv report from eventbrite with: name surname status company
 - Import csv file in `iscritti` table using phpmyadmin with:
@@ -30,5 +30,5 @@ Client and Server for Nethesis partner meeting badges 2017
  3. Column separated with `,` 
  4. Column escaped and enclose with empty 
  5. Lines terminated with `auto` 
- 6. Column name: ordine, nome, cognome, stato, agency
+ 6. Column name: ordine, nome, cognome, email, stato, agency
 - Run server with` node server.js`
