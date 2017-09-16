@@ -98,6 +98,7 @@ input {
     border-radius: .28571429rem;
     float: right;
     padding: 0px !important;
+    display: none !important;
 }
 
 .mobile {
@@ -111,6 +112,7 @@ input {
 
 .ng-table-counts {
     margin-top: 14px;
+    display: none !important;
 }
 
 .ng-table-counts button {

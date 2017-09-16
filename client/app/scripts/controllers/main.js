@@ -28,7 +28,7 @@ angular.module('nethCheckInApp')
             };
 
             $scope.tableParams = new NgTableParams({
-                count: 10
+                count: 1000
             }, {
                 total: $scope.data.length,
                 data: $scope.data
@@ -51,7 +51,7 @@ angular.module('nethCheckInApp')
                 // get raw data from server
                 $scope.data = successData.data;
                 $scope.tableParams = new NgTableParams({
-                    count: 10
+                    count: 1000
                 }, {
                     total: $scope.data.length,
                     data: $scope.data
@@ -74,11 +74,37 @@ angular.module('nethCheckInApp')
                 agency = "";
             }
 
-            $scope.doc = new jsPDF("h1","mm",[29,31]);
+            name = name.charAt(0).toUpperCase() + name.slice(1);
+            surname = surname.charAt(0).toUpperCase() + surname.slice(1);
+            agency = agency.trim();
 
-            $scope.doc.text(name, 1, 8);
-            $scope.doc.text(surname, 1, 16)
-            $scope.doc.text(agency, 1, 27);
+            if (name === name.toUpperCase() && name.length > 14) {
+                name = name.substring(0, 14) + ".";
+            }
+
+            if (surname === surname.toUpperCase() && surname.length > 14) {
+                surname = surname.substring(0, 14) + ".";
+            }
+
+            if (agency === agency.toUpperCase() && agency.length > 14) {
+                agency = agency.substring(0, 14) + ".";
+            }
+
+            if (agency.length > 17) {
+                agency = agency.substring(0, 17) + ".";
+            }
+
+            console.log("Agenzia -> " + agency);
+
+            $scope.doc = new jsPDF("h1","mm",[42,20]);
+
+            $scope.doc.setFontStyle("bold");
+            $scope.doc.setFontSize(18);
+            $scope.doc.text(name, 0, 5);
+            $scope.doc.text(surname, 0, 12);
+            $scope.doc.setFontStyle("italic");
+            $scope.doc.setFontSize(13);
+            $scope.doc.text(agency, 0, 18);
             $scope.doc.autoPrint();
             $scope.mywindow = window.open($scope.doc.output('bloburl'), '_blank');
 
