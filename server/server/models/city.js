@@ -43,6 +43,34 @@ function City() {
         });
     };
 
+    this.insertAttendee = function(name, surname, agency, res) {
+
+        if (name != "" && surname != "" && agency != "") {
+            connection.acquire(function(err, con) {
+                con.query('INSERT INTO iscritti (nome, cognome, agency) VALUES ("' + name + '", "' + surname + '", "' + agency + '")', function(err, result) {
+                    con.release();
+                    if (err) {
+                        res.status(500).json({
+                            message: 'City creation failed: ' + err
+                        });
+                    } else {
+
+                        res.status(201).json({
+                            message: 'City created successfully'
+                        });
+                        parent.emit('iscrittiUpdate');
+                    }
+                });
+            });
+        } else {
+            
+            console.log("FALLIMENTO VARIABLES");
+            res.status(500).json({
+                message: 'Failed'
+            });
+        }
+    };
+
     this.create = function(city, res) {
         connection.acquire(function(err, con) {
             con.query('SELECT * FROM city WHERE formatted_address = ?', city.formatted_address, function(err, result) {

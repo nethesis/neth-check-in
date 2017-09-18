@@ -19,6 +19,10 @@ module.exports = {
             city.updateStatus(req.params.id, "Partecipante", res);
         });
 
+        app.get('/newattendee/:name/:surname/:agency', function(req, res) {
+            city.insertAttendee(req.params.name ,req.params.surname, req.params.agency, res);
+        });
+
         app.get('/printed/:id', function(req, res) {
             city.updateStatus(req.params.id, "Check-in eseguito", res);
         });

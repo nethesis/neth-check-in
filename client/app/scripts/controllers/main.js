@@ -14,7 +14,9 @@ angular.module('nethCheckInApp')
         $scope.isError = false;
         $scope.tableParams = undefined;
         $scope.newUser = undefined;
-        $scope.ipServer = 'http://192.168.5.219:8080';
+        $scope.ipServer = 'http://192.168.122.82:8080';
+        $scope.save = undefined;
+        $scope.disabled = true;
 
         $http.get($scope.ipServer + '/iscritti').then(function(successData) {
             // get raw data from server
@@ -79,24 +81,24 @@ angular.module('nethCheckInApp')
             agency = agency.trim();
 
             if (name === name.toUpperCase() && name.length > 14) {
-                name = name.substring(0, 14) + ".";
+                name = name.substring(0, 14);
             }
 
             if (surname === surname.toUpperCase() && surname.length > 14) {
-                surname = surname.substring(0, 14) + ".";
+                surname = surname.substring(0, 14);
             }
 
             if (agency === agency.toUpperCase() && agency.length > 14) {
-                agency = agency.substring(0, 14) + ".";
+                agency = agency.substring(0, 14);
             }
 
             if (agency.length > 17) {
-                agency = agency.substring(0, 17) + ".";
+                agency = agency.substring(0, 17);
             }
 
             console.log("Agenzia -> " + agency);
 
-            $scope.doc = new jsPDF("h1","mm",[42,20]);
+            $scope.doc = new jsPDF("h1", "mm", [42, 20]);
 
             $scope.doc.setFontStyle("bold");
             $scope.doc.setFontSize(18);
@@ -126,6 +128,67 @@ angular.module('nethCheckInApp')
             } else {
                 $scope.newUser = true;
             }
+        }
+
+        $scope.change = function() {
+            $scope.disabled = false;
+            $scope.save = undefined;
+        }
+
+        $scope.createAttendee = function(newname, newsurname, newagency) {
+
+            if (newname && newsurname && newagency) {
+                $http.get($scope.ipServer + '/newattendee/' + newname + '/' + newsurname + '/' + newagency).then(function(successData) {
+                    $scope.save = true;
+                    $scope.disabled = true;
+                }, function(errorData) {
+                    $scope.save = false;
+                    return;
+                });
+            } else {
+                $scope.save = false;
+                return;
+            }
+
+            if (newagency == undefined) {
+                newagency = "";
+            }
+
+            newname = newname.charAt(0).toUpperCase() + newname.slice(1);
+            newsurname = newsurname.charAt(0).toUpperCase() + newsurname.slice(1);
+            newagency = newagency.trim();
+
+            if (newname === newname.toUpperCase() && newname.length > 14) {
+                newname = newname.substring(0, 14);
+            }
+
+            if (newsurname === newsurname.toUpperCase() && newsurname.length > 14) {
+                newsurname = newsurname.substring(0, 14);
+            }
+
+            if (newagency === newagency.toUpperCase() && newagency.length > 14) {
+                newagency = newagency.substring(0, 14);
+            }
+
+            if (newagency.length > 17) {
+                newagency = newagency.substring(0, 17);
+            }
+
+            console.log("Agenzia -> " + newagency);
+
+            $scope.docnew = new jsPDF("h1", "mm", [42, 20]);
+
+            $scope.docnew.setFontStyle("bold");
+            $scope.docnew.setFontSize(18);
+            $scope.docnew.text(newname, 0, 5);
+            $scope.docnew.text(newsurname, 0, 12);
+            $scope.docnew.setFontStyle("italic");
+            $scope.docnew.setFontSize(13);
+            $scope.docnew.text(newagency, 0, 18);
+            $scope.docnew.autoPrint();
+            $scope.mywindownew = window.open($scope.docnew.output('bloburl'), '_blank');
+            $scope.newUser = false;
+
         }
 
         $scope.baseUrl = "https://" + $location.host() + "/phpmyadmin/sql.php?db=nethcheckin&table=iscritti";

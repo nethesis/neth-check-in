@@ -40,18 +40,18 @@
                 <div class="three fields">
                     <div class="field">
                         <label>Nome</label>
-                        <input type="text" placeholder="Inserisci il nome">
+                        <input ng-model="newname" ng-change="change()" id="inputname" type="text" placeholder="Inserisci il nome">
                     </div>
                     <div class="field">
                         <label>Cognome</label>
-                        <input type="text" placeholder="Inserisci il cognome">
+                        <input ng-model="newsurname" ng-change="change()" id="inputsurname" type="text" placeholder="Inserisci il cognome">
                     </div>
                     <div class="field">
                         <label>Azienda</label>
-                        <input type="text" placeholder="Inserisci il nome dell' azienda">
+                        <input ng-model="newagency" ng-change="change()" type="text" id="inputagency" placeholder="Inserisci il nome dell' azienda">
                     </div>
                 </div>
-                <div class="ui medium primary button"><i class="save icon"></i> Salva</div>
+                <div ng-click="createAttendee(newname, newsurname, newagency)" id="savebutton" class="ui {{disabled ? 'disabled' : ''}} medium primary button"><i class="save icon"></i> {{save == false ? 'Fallito' : save == true ? 'Modifiche salvate' : 'Salva'}}</div>
             </div>
 
             <div class="row dt-table">
@@ -118,7 +118,7 @@
     .ui.message {
         background-color: rga(238, 238, 238);
         box-shadow: none;
-        padding: 5em 4em;
+        padding: 5em 3.5em;
     }
 
     .ui.message h1.ui.header {
