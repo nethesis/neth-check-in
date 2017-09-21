@@ -4,7 +4,7 @@ var configs = require('../../config/config');
 
 module.exports = {
     configure: function(app) {
-        
+
         app.use(function(req, res, next) {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -19,47 +19,17 @@ module.exports = {
             city.updateStatus(req.params.id, "Partecipante", res);
         });
 
+        app.get('/stats/', function(req, res) {
+            city.selectStat(res);
+        });
+
         app.get('/newattendee/:name/:surname/:agency', function(req, res) {
-            city.insertAttendee(req.params.name ,req.params.surname, req.params.agency, res);
+            city.insertAttendee(req.params.name, req.params.surname, req.params.agency, res);
         });
 
         app.get('/printed/:id', function(req, res) {
             city.updateStatus(req.params.id, "Check-in eseguito", res);
         });
-
-        app.post('/city/', function(req, res) {
-            if (req.body.secret === configs.SECRET) {
-                delete req.body.secret;
-                city.create(req.body, res);
-            } else {
-                res.status(403).json({
-                    message: 'Invalid secret'
-                });
-            }
-        });
-
-        app.put('/city/:id', function(req, res) {
-            if (req.body.secret === configs.SECRET) {
-                delete req.body.secret;
-                city.update(req.params.id, req.body, res);
-            } else {
-                res.status(403).json({
-                    message: 'Invalid secret'
-                });
-            }
-        });
-
-        app.delete('/city/:id/', function(req, res) {
-            if (req.body.secret === configs.SECRET) {
-                delete req.body.secret;
-                city.delete(req.params.id, res);
-            } else {
-                res.status(403).json({
-                    message: 'Invalid secret'
-                });
-            }
-        });
-
 
     }
 };

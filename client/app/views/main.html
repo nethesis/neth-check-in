@@ -27,10 +27,32 @@
             </div>
         </div>
     </div>
+
+    <div class="ui three steps">
+        <div class="step">
+            <div class="content">
+                <div class="title">{{totalCheckin}}</div>
+                <div class="description">Totale Partecipanti</div>
+            </div>
+        </div>
+        <div class="active step">
+            <div class="content">
+                <div class="title">{{doneCheckin}}</div>
+                <div class="description">Check-in Eseguiti</div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="content">
+                <div class="title">{{percentCheckin}}%</div>
+                <div class="description">Percentuale Completamento</div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="ui message">
             <h1 class="ui huge header">
-            Neth Check-in
+              <img style="margin-top: -12px;" src="images/logo.png"></img>  Neth Check-in
             </h1>
 
             <button ng-click="showNewForm()" class="ui basic icon button item big tiny-margin-top ng-scope butto" data-tooltip="Nuovo partecipante" data-position="left center"> <i class="add user icon"></i> </button><br>
@@ -118,7 +140,7 @@
     .ui.message {
         background-color: rga(238, 238, 238);
         box-shadow: none;
-        padding: 5em 3.5em;
+        padding: 4.7em 3.5em;
     }
 
     .ui.message h1.ui.header {

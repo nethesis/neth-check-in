@@ -13,15 +13,28 @@
     display: none !important;
 }
 
+.ui.steps .step .title~.description {
+    margin-top: .55em !important;
+    font-size: 1em !important;
+}
+
+.step:after {
+    display: none !important;
+}
+
+.ui.steps .step .title {
+    font-size: 2rem !important;
+}
+
 .butto {
     float: right;
-margin-top: -46px !important; 
-margin-right: 0px !important;
+    margin-top: -46px !important;
+    margin-right: 0px !important;
 }
 
 .newser {
     margin-top: 48px;
-margin-bottom: 40px;
+    margin-bottom: 40px;
 }
 
 .dt-table {
@@ -203,6 +216,10 @@ input:focus {
     width: 100% !important;
 }
 
+.ui.three.steps>.step {
+    padding-top: 20px !important;
+}
+
 .ui.message h1.ui.header {
     font-size: 3em !important;
 }
@@ -215,7 +232,6 @@ body {
     padding: 0;
 }
 
-
 /* Everything but the jumbotron gets side spacing for mobile first views */
 
 .header, .marketing, .footer {
@@ -223,14 +239,12 @@ body {
     padding-right: 15px;
 }
 
-
 /* Custom page header */
 
 .header {
     border-bottom: 1px solid #e5e5e5;
     margin-bottom: 10px;
 }
-
 
 /* Make the masthead heading the same height as the navigation */
 
@@ -240,7 +254,6 @@ body {
     line-height: 40px;
     padding-bottom: 19px;
 }
-
 
 /* Custom page footer */
 
@@ -254,7 +267,6 @@ body {
     margin: 30px 0;
 }
 
-
 /* Main marketing message and sign up button */
 
 .jumbotron {
@@ -267,7 +279,6 @@ body {
     padding: 14px 24px;
 }
 
-
 /* Supporting marketing content */
 
 .marketing {
@@ -277,7 +288,6 @@ body {
 .marketing p+h4 {
     margin-top: 28px;
 }
-
 
 /* Responsive: Portrait tablets and up */
 

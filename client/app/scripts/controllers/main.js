@@ -17,6 +17,9 @@ angular.module('nethCheckInApp')
         $scope.ipServer = 'http://192.168.122.82:8080';
         $scope.save = undefined;
         $scope.disabled = true;
+        $scope.totalCheckin = 0;
+        $scope.doneCheckin = 0;
+        $scope.percentCheckin = 0;
 
         $http.get($scope.ipServer + '/iscritti').then(function(successData) {
             // get raw data from server
@@ -34,7 +37,6 @@ angular.module('nethCheckInApp')
             }, {
                 total: $scope.data.length,
                 data: $scope.data
-
             });
 
         }, function(errorData) {
@@ -47,7 +49,6 @@ angular.module('nethCheckInApp')
 
         socket.on("iscrittiUpdate", function() {
             console.log("EVENT");
-
 
             $http.get($scope.ipServer + '/iscritti').then(function(successData) {
                 // get raw data from server
@@ -62,20 +63,21 @@ angular.module('nethCheckInApp')
                 // hide loader 
                 console.log(errorData);
             });
+
+            $scope.statUpdate();
         });
 
         document.body.style.zoom = "110%";
 
         $scope.functionCheckin = function(stato, id, name, surname, agency) {
             $http.get($scope.ipServer + '/printed/' + id).then(function(successData) {
-
+                //print
             }, function(errorData) {
-
+                //errpr
             });
             if (agency == undefined) {
                 agency = "";
             }
-
             name = name.charAt(0).toUpperCase() + name.slice(1);
             surname = surname.charAt(0).toUpperCase() + surname.slice(1);
             agency = agency.trim();
@@ -83,23 +85,16 @@ angular.module('nethCheckInApp')
             if (name === name.toUpperCase() && name.length > 14) {
                 name = name.substring(0, 14);
             }
-
             if (surname === surname.toUpperCase() && surname.length > 14) {
                 surname = surname.substring(0, 14);
             }
-
             if (agency === agency.toUpperCase() && agency.length > 14) {
                 agency = agency.substring(0, 14);
             }
-
             if (agency.length > 17) {
                 agency = agency.substring(0, 17);
             }
-
-            console.log("Agenzia -> " + agency);
-
             $scope.doc = new jsPDF("h1", "mm", [42, 20]);
-
             $scope.doc.setFontStyle("bold");
             $scope.doc.setFontSize(18);
             $scope.doc.text(name, 0, 5);
@@ -109,17 +104,24 @@ angular.module('nethCheckInApp')
             $scope.doc.text(agency, 0, 18);
             $scope.doc.autoPrint();
             $scope.mywindow = window.open($scope.doc.output('bloburl'), '_blank');
-
         }
 
         $scope.functionRePrint = function(id) {
-
             $http.get($scope.ipServer + '/checkin/' + id).then(function(successData) {
-
+                //reset status
             }, function(errorData) {
-
+                //error
             });
+        }
 
+        $scope.statUpdate = function() {
+            $http.get($scope.ipServer + '/stats/').then(function(successData) {
+                $scope.totalCheckin = successData.data.result[0].total;
+                $scope.doneCheckin = successData.data.result[0].done;
+                $scope.percentCheckin = Math.floor(100 / $scope.totalCheckin * $scope.doneCheckin);
+            }, function(errorData) {
+                //error
+            });
         }
 
         $scope.showNewForm = function() {
@@ -136,7 +138,6 @@ angular.module('nethCheckInApp')
         }
 
         $scope.createAttendee = function(newname, newsurname, newagency) {
-
             if (newname && newsurname && newagency) {
                 $http.get($scope.ipServer + '/newattendee/' + newname + '/' + newsurname + '/' + newagency).then(function(successData) {
                     $scope.save = true;
@@ -149,35 +150,26 @@ angular.module('nethCheckInApp')
                 $scope.save = false;
                 return;
             }
-
             if (newagency == undefined) {
                 newagency = "";
             }
-
             newname = newname.charAt(0).toUpperCase() + newname.slice(1);
             newsurname = newsurname.charAt(0).toUpperCase() + newsurname.slice(1);
             newagency = newagency.trim();
-
             if (newname === newname.toUpperCase() && newname.length > 14) {
                 newname = newname.substring(0, 14);
             }
-
             if (newsurname === newsurname.toUpperCase() && newsurname.length > 14) {
                 newsurname = newsurname.substring(0, 14);
             }
-
             if (newagency === newagency.toUpperCase() && newagency.length > 14) {
                 newagency = newagency.substring(0, 14);
             }
-
             if (newagency.length > 17) {
                 newagency = newagency.substring(0, 17);
             }
 
-            console.log("Agenzia -> " + newagency);
-
             $scope.docnew = new jsPDF("h1", "mm", [42, 20]);
-
             $scope.docnew.setFontStyle("bold");
             $scope.docnew.setFontSize(18);
             $scope.docnew.text(newname, 0, 5);
@@ -188,7 +180,6 @@ angular.module('nethCheckInApp')
             $scope.docnew.autoPrint();
             $scope.mywindownew = window.open($scope.docnew.output('bloburl'), '_blank');
             $scope.newUser = false;
-
         }
 
         $scope.baseUrl = "https://" + $location.host() + "/phpmyadmin/sql.php?db=nethcheckin&table=iscritti";

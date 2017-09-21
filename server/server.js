@@ -24,9 +24,6 @@ server.listen(configs.NODEJS_PORT, configs.NODEJS_IP, function() {
     connection.init();
     routes.configure(app);
 
-    // init model table
-    city.initTable();
-
     // set default route
     app.get('/', function(req, res) {
         res.status(200).json({
