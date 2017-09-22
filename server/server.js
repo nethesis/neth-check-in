@@ -10,6 +10,7 @@ var city = require('./server/models/city');
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var path = require('path');
 
 city.setParent(io);
 
@@ -17,6 +18,13 @@ app.use(bodyparser.urlencoded({
     extended: true
 }));
 app.use(bodyparser.json());
+
+app.use(express.static('../client'));
+app.use('/app/bower_components/ng-table/dist' ,express.static('../client/bower_components/ng-table/dist'));
+app.use('/app/bower_components/angular' ,express.static('../client/bower_components/angular'));
+app.use('/app/bower_components/angular-route' ,express.static('../client/bower_components/angular-route'));
+app.use('/app/bower_components/angular-sanitize' ,express.static('../client/bower_components/angular-sanitize'));
+app.use('/app/bower_components/jspdf/dist' ,express.static('../client/bower_components/jspdf/dist'));
 
 server.listen(configs.NODEJS_PORT, configs.NODEJS_IP, function() {
     console.log('%s: Node server started on %s:%d ...', Date(Date.now()), configs.NODEJS_IP, configs.NODEJS_PORT);

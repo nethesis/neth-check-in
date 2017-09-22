@@ -14,7 +14,7 @@ angular.module('nethCheckInApp')
         $scope.isError = false;
         $scope.tableParams = undefined;
         $scope.newUser = undefined;
-        $scope.ipServer = 'http://192.168.122.82:8080';
+        $scope.ipServer = 'http://192.168.5.219:8080';
         $scope.save = undefined;
         $scope.disabled = true;
         $scope.totalCheckin = 0;
@@ -78,7 +78,9 @@ angular.module('nethCheckInApp')
             if (agency == undefined) {
                 agency = "";
             }
+            name = name.toLowerCase();
             name = name.charAt(0).toUpperCase() + name.slice(1);
+            surname = surname.toLowerCase();
             surname = surname.charAt(0).toUpperCase() + surname.slice(1);
             agency = agency.trim();
 
@@ -153,7 +155,9 @@ angular.module('nethCheckInApp')
             if (newagency == undefined) {
                 newagency = "";
             }
+            newname = newname.toLowerCase();
             newname = newname.charAt(0).toUpperCase() + newname.slice(1);
+            newsurname = newsurname.toLowerCase();
             newsurname = newsurname.charAt(0).toUpperCase() + newsurname.slice(1);
             newagency = newagency.trim();
             if (newname === newname.toUpperCase() && newname.length > 14) {
@@ -182,6 +186,7 @@ angular.module('nethCheckInApp')
             $scope.newUser = false;
         }
 
+        $scope.statUpdate();
         $scope.baseUrl = "https://" + $location.host() + "/phpmyadmin/sql.php?db=nethcheckin&table=iscritti";
         document.getElementById("urlPhp").innerHTML = "<a style='display: none; color:#bdbdbd;' target='blank' href='" + $scope.baseUrl + "'>Importa .csv</a>";
 
