@@ -14,7 +14,6 @@ Client and Server for Nethesis partner meeting badges 2017
 - `signal-event runlevel-adjust; signal-event firewall-adjust`
 - Change $scope.ipServer var with the server location ip addr in app/scripts/controllers/main.js and 
 - Replace socket url in app/index.html
-- **Run** client: `grunt server`  in client directory
 
 **Server Installation**
 
@@ -31,4 +30,7 @@ Client and Server for Nethesis partner meeting badges 2017
  4. Column escaped and enclose with empty 
  5. Lines terminated with `auto` 
  6. Column name: ordine, nome, cognome, email, stato, agency
-- Run server with` node server.js`
+ 
+ **Start App**
+ 
+ - Run server with` node server.js` in server dir
