@@ -34,3 +34,21 @@ Client and Server for Nethesis partner meeting badges 2017
  **Start App**
  
  - Run server with` node server.js` in server dir
+ 
+ **System**
+ 
+ `[Unit]`
+ `Description=NethCheck-in`
+ `Documentation=http://www.nethesis.it`
+ `After=network.target`
+ 
+ `[Service]`
+ `User=root`
+ `WorkingDirectory=/root/neth-check-in/server`
+ `ExecStart=/usr/bin/node /root/neth-check-in/server/server.js`
+ `Restart=on-failure`
+ 
+ `[Install]`
+ `WantBy=multi-user.target`
+ 
+ 
