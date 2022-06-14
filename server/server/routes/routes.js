@@ -1,6 +1,4 @@
 var city = require('../models/city');
-var country = require('../models/country');
-var configs = require('../../config/config');
 
 module.exports = {
     configure: function(app) {

@@ -14,7 +14,7 @@
     </p>
 </div>
 
-<div ng-show="!isLoading && !isError" class="ui grid container cont">
+<div ng-show="!isLoading && !isError" class="ui grid container cont" style="width: calc(1500px + 2rem) !important;">
     <div class="tablet mobile only row">
         <div class="ui borderless huge fluid menu">
             <a class="header item"> Project Name</a>
@@ -96,8 +96,12 @@
                                 {{user.email}}</td>
                             <td title="'Azienda'" class="single line" sortable="'agency'">
                                 {{user.agency}}</td>
+                            <td title="'Sala'" class="single line" sortable="'sala'">
+                                {{user.sala}}</td>
+                            <td title="'Tipo'" class="single line" sortable="'tipo'">
+                                {{user.tipo}}</td>
                             <td style="width: 258px;" title="'Stato'" class="single line" sortable="'stato'">
-                                <span class="{{user.stato == 'Check-in eseguito' ? 'red' : 'green action'}}"><button ng-click="functionCheckin(user.stato,user.id,user.nome,user.cognome,user.agency)" class="ui blue button medium {{user.stato == 'Check-in eseguito' ? 'hidden' : 'show'}}">Esegui check-in</button><div class="ui buttons {{user.stato == 'Check-in eseguito' ? 'show' : 'hidden'}}"><button class="ui button disabled medium">Check-in eseguito</button><button ng-click="functionRePrint(user.id)" class="ui positive button yellow medium">Ripristina</button></div></span>
+                                <span class="{{user.stato == 'Check-in eseguito' ? 'red' : 'green action'}}"><button ng-click="functionCheckin(user.stato,user.id,user.nome,user.cognome,user.agency,user.tipo)" class="ui blue button medium {{user.stato == 'Check-in eseguito' ? 'hidden' : 'show'}}">Esegui check-in</button><div class="ui buttons {{user.stato == 'Check-in eseguito' ? 'show' : 'hidden'}}"><button class="ui button disabled medium">Check-in eseguito</button><button ng-click="functionRePrint(user.id)" class="ui positive button yellow medium">Ripristina</button></div></span>
                             </td>
                         </tr>
                     </table>

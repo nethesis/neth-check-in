@@ -32,6 +32,8 @@ CREATE TABLE IF NOT EXISTS `iscritti` (
   `cognome` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `stato` enum('Partecipante','Check-in eseguito') NOT NULL DEFAULT 'Partecipante',
+  `sala` varchar(255) DEFAULT NULL, /* 'Byteman','Robi','Wan','Super' */
+  `tipo` varchar(255) DEFAULT NULL, /* 'Partner','Prospect','Sponsor' */
   `agency` varchar(255) DEFAULT NULL,
   `id` bigint(12) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

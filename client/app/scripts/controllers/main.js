@@ -14,7 +14,7 @@ angular.module('nethCheckInApp')
         $scope.isError = false;
         $scope.tableParams = undefined;
         $scope.newUser = undefined;
-        $scope.ipServer = 'http://192.168.5.219:8080';
+        $scope.ipServer = 'http://172.25.5.78:8080';
         $scope.save = undefined;
         $scope.disabled = true;
         $scope.totalCheckin = 0;
@@ -69,15 +69,12 @@ angular.module('nethCheckInApp')
 
         document.body.style.zoom = "110%";
 
-        $scope.functionCheckin = function(stato, id, name, surname, agency) {
-            $http.get($scope.ipServer + '/printed/' + id).then(function(successData) {
-                //print
-            }, function(errorData) {
-                //errpr
-            });
-            if (agency == undefined) {
-                agency = "";
-            }
+        var printPDF = function (name, surname, agency, type) {
+
+            if (!agency) agency = ""
+            var isProspect = type && type.toLowerCase() === 'prospect'
+            var isSponsor = type && type.toLowerCase() === 'sponsor'
+
             name = name.toLowerCase();
             name = name.charAt(0).toUpperCase() + name.slice(1);
             surname = surname.toLowerCase();
@@ -96,16 +93,39 @@ angular.module('nethCheckInApp')
             if (agency.length > 17) {
                 agency = agency.substring(0, 17);
             }
-            $scope.doc = new jsPDF("h1", "mm", [42, 20]);
-            $scope.doc.setFontStyle("bold");
-            $scope.doc.setFontSize(18);
-            $scope.doc.text(name, 0, 5);
-            $scope.doc.text(surname, 0, 12);
-            $scope.doc.setFontStyle("italic");
-            $scope.doc.setFontSize(13);
-            $scope.doc.text(agency, 0, 18);
-            $scope.doc.autoPrint();
-            $scope.mywindow = window.open($scope.doc.output('bloburl'), '_blank');
+            var pdf = new jsPDF("h1", "mm", [42, 20]);
+
+            var pages = 2
+
+            for (var i = 0; i < pages; i++) {
+                if (i !== 0) pdf.addPage()
+
+                pdf.setFontStyle("bold");
+                pdf.setFontSize(18);
+                pdf.text(name, 0, 5);
+                pdf.text(surname, 0, 12);
+                pdf.setFontStyle("italic");
+                pdf.setFontSize(13);
+
+                var textAgency = agency
+                if (isSponsor) textAgency = agency + ' (S)'
+
+                pdf.text(textAgency, 0, 18);
+                if (isProspect) pdf.line(0, 19, 20, 19);
+
+            }
+
+            pdf.autoPrint();
+            $scope.mywindow = window.open(pdf.output('bloburl'), '_blank');
+        }
+
+        $scope.functionCheckin = function(stato, id, name, surname, agency, type) {
+            $http.get($scope.ipServer + '/printed/' + id).then(function(successData) {
+                //print
+            }, function(errorData) {
+                //errpr
+            });
+            printPDF(name, surname, agency, type)
         }
 
         $scope.functionRePrint = function(id) {
@@ -152,42 +172,11 @@ angular.module('nethCheckInApp')
                 $scope.save = false;
                 return;
             }
-            if (newagency == undefined) {
-                newagency = "";
-            }
-            newname = newname.toLowerCase();
-            newname = newname.charAt(0).toUpperCase() + newname.slice(1);
-            newsurname = newsurname.toLowerCase();
-            newsurname = newsurname.charAt(0).toUpperCase() + newsurname.slice(1);
-            newagency = newagency.trim();
-            if (newname === newname.toUpperCase() && newname.length > 14) {
-                newname = newname.substring(0, 14);
-            }
-            if (newsurname === newsurname.toUpperCase() && newsurname.length > 14) {
-                newsurname = newsurname.substring(0, 14);
-            }
-            if (newagency === newagency.toUpperCase() && newagency.length > 14) {
-                newagency = newagency.substring(0, 14);
-            }
-            if (newagency.length > 17) {
-                newagency = newagency.substring(0, 17);
-            }
-
-            $scope.docnew = new jsPDF("h1", "mm", [42, 20]);
-            $scope.docnew.setFontStyle("bold");
-            $scope.docnew.setFontSize(18);
-            $scope.docnew.text(newname, 0, 5);
-            $scope.docnew.text(newsurname, 0, 12);
-            $scope.docnew.setFontStyle("italic");
-            $scope.docnew.setFontSize(13);
-            $scope.docnew.text(newagency, 0, 18);
-            $scope.docnew.autoPrint();
-            $scope.mywindownew = window.open($scope.docnew.output('bloburl'), '_blank');
+            printPDF(newname, newsurname, newagency)
             $scope.newUser = false;
         }
 
         $scope.statUpdate();
         $scope.baseUrl = "https://" + $location.host() + "/phpmyadmin/sql.php?db=nethcheckin&table=iscritti";
-        document.getElementById("urlPhp").innerHTML = "<a style='display: none; color:#bdbdbd;' target='blank' href='" + $scope.baseUrl + "'>Importa .csv</a>";
 
     });

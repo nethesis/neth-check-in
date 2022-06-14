@@ -9,8 +9,12 @@ var city = require('./server/models/city');
 
 var app = require('express')();
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
-var path = require('path');
+var io = require('socket.io')(server, {
+    cors: {
+      origin: "*",
+      methods: ['GET', 'PUT', 'POST']
+    }
+  });
 
 city.setParent(io);
 
