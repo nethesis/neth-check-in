@@ -75,43 +75,57 @@ angular.module('nethCheckInApp')
             var isProspect = type && type.toLowerCase() === 'prospect'
             var isSponsor = type && type.toLowerCase() === 'sponsor'
 
-            name = name.toLowerCase();
-            name = name.charAt(0).toUpperCase() + name.slice(1);
-            surname = surname.toLowerCase();
-            surname = surname.charAt(0).toUpperCase() + surname.slice(1);
-            agency = agency.trim();
+            var nameArr = name.toLowerCase().split(' ')
+            var newNameArr = nameArr.map(name => name.charAt(0).toUpperCase() + name.slice(1))
+            name = newNameArr.join(" ")
 
-            if (name === name.toUpperCase() && name.length > 14) {
-                name = name.substring(0, 14);
+            if (name.length > 12) {
+                name = name.substring(0, 12).trim() + '..';
             }
-            if (surname === surname.toUpperCase() && surname.length > 14) {
-                surname = surname.substring(0, 14);
-            }
-            if (agency === agency.toUpperCase() && agency.length > 14) {
-                agency = agency.substring(0, 14);
-            }
-            if (agency.length > 17) {
-                agency = agency.substring(0, 17);
-            }
-            var pdf = new jsPDF("h1", "mm", [42, 20]);
 
-            var pages = 2
+            var surnameArr = surname.toLowerCase().split(' ')
+            var newSurnameArr = surnameArr.map(surname => surname.charAt(0).toUpperCase() + surname.slice(1))
+            surname = newSurnameArr.join(" ")
+
+            if (surname.length > 12) {
+                surname = surname.substring(0, 12).trim() + '..';
+            }
+
+            agency = agency.toUpperCase().trim()
+            if (isSponsor) {
+                if (agency.length > 12) {
+                    agency = agency.substring(0, 12).trim() + "..";
+                }
+            } else {
+                if (agency.length > 15) {
+                    agency = agency.substring(0, 15).trim() + "..";
+                }
+            }
+
+            var fromLeft = 3
+            var fromTop = 4
+
+            var pdf = new jsPDF({
+                orientation: 'l',
+                unit: 'mm',
+                format: [62, 29]
+            })
+
+            var pages = 1
 
             for (var i = 0; i < pages; i++) {
                 if (i !== 0) pdf.addPage()
 
                 pdf.setFontStyle("bold");
-                pdf.setFontSize(18);
-                pdf.text(name, 0, 5);
-                pdf.text(surname, 0, 12);
+                pdf.setFontSize(21);
+                pdf.text(name, fromLeft, 5 + fromTop);
+                pdf.text(surname, fromLeft, 12 + fromTop);
                 pdf.setFontStyle("italic");
-                pdf.setFontSize(13);
-
+                pdf.setFontSize(17);
                 var textAgency = agency
-                if (isSponsor) textAgency = agency + ' (S)'
-
-                pdf.text(textAgency, 0, 18);
-                if (isProspect) pdf.line(0, 19, 20, 19);
+                if (isSponsor) textAgency = agency + '(S)'
+                pdf.text(textAgency, fromLeft, 19 + fromTop);
+                if (isProspect) pdf.line(fromLeft-1, 24, agency.length * 4, 24);
 
             }
 
