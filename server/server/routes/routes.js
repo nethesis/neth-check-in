@@ -1,4 +1,6 @@
 var city = require('../models/city');
+var multer = require('multer');
+var upload = multer({ dest: 'tmp/csv/' });
 
 module.exports = {
     configure: function(app) {
@@ -29,5 +31,12 @@ module.exports = {
             city.updateStatus(req.params.id, "Check-in eseguito", res);
         });
 
+        app.post('/upload', upload.single('csvFile'), function(req, res) {
+            city.upload(req, res);
+        });
+
+        app.get('/download', function(req, res) {
+            city.download(req, res);
+        });
     }
 };

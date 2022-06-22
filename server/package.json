@@ -25,14 +25,20 @@
   "dependencies": {
     "body-parser": "~1.15.1",
     "cookie-parser": "~1.4.3",
+    "csv-parse": "^5.2.0",
     "debug": "~2.2.0",
     "ejs": "^2.5.1",
     "express": "~4.13.4",
     "fs": "0.0.1-security",
     "i18n-iso-countries": "^1.8.0",
+    "json2csv": "^5.0.7",
     "morgan": "~1.7.0",
+    "multer": "^1.4.5-lts.1",
     "mysql": "^2.11.1",
     "serve-favicon": "~2.3.0",
     "socket.io": "^4.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
   }
 }

@@ -14,12 +14,13 @@ angular.module('nethCheckInApp')
         $scope.isError = false;
         $scope.tableParams = undefined;
         $scope.newUser = undefined;
-        $scope.ipServer = 'http://172.25.5.78:8080';
+        $scope.ipServer = 'http://' + CONFIGS.IP + ':' + CONFIGS.NODEJS_PORT;
         $scope.save = undefined;
         $scope.disabled = true;
         $scope.totalCheckin = 0;
         $scope.doneCheckin = 0;
         $scope.percentCheckin = 0;
+        window.jsPDF = window.jspdf.jsPDF;
 
         $http.get($scope.ipServer + '/iscritti').then(function(successData) {
             // get raw data from server
@@ -67,7 +68,6 @@ angular.module('nethCheckInApp')
             $scope.statUpdate();
         });
 
-        document.body.style.zoom = "110%";
 
         var printPDF = function (name, surname, agency, type) {
 
@@ -93,12 +93,12 @@ angular.module('nethCheckInApp')
 
             agency = agency.toUpperCase().trim()
             if (isSponsor) {
-                if (agency.length > 12) {
-                    agency = agency.substring(0, 12).trim() + "..";
+                if (agency.length > 26) {
+                    agency = agency.substring(0, 26).trim() + "..";
                 }
             } else {
-                if (agency.length > 15) {
-                    agency = agency.substring(0, 15).trim() + "..";
+                if (agency.length > 29) {
+                    agency = agency.substring(0, 29).trim() + "..";
                 }
             }
 
@@ -111,22 +111,28 @@ angular.module('nethCheckInApp')
                 format: [62, 29]
             })
 
-            var pages = 1
+            var pages = 2
 
             for (var i = 0; i < pages; i++) {
                 if (i !== 0) pdf.addPage()
 
-                pdf.setFontStyle("bold");
+                pdf.addFileToVFS('Changa.ttf', CHANGA);
+                pdf.addFont('Changa.ttf', 'Changa', 'normal');
+                pdf.setFont('Changa', 'normal');
+
                 pdf.setFontSize(21);
                 pdf.text(name, fromLeft, 5 + fromTop);
                 pdf.text(surname, fromLeft, 12 + fromTop);
-                pdf.setFontStyle("italic");
-                pdf.setFontSize(17);
+
+                pdf.addFileToVFS('Cuprum.ttf', CUPRUM);
+                pdf.addFont('Cuprum.ttf', 'Cuprum', 'normal');
+                pdf.setFont('Cuprum', 'normal');
+                
+                pdf.setFontSize(12);
                 var textAgency = agency
                 if (isSponsor) textAgency = agency + '(S)'
                 pdf.text(textAgency, fromLeft, 19 + fromTop);
                 if (isProspect) pdf.line(fromLeft-1, 24, agency.length * 4, 24);
-
             }
 
             pdf.autoPrint();
@@ -163,8 +169,13 @@ angular.module('nethCheckInApp')
         $scope.showNewForm = function() {
             if ($scope.newUser) {
                 $scope.newUser = false;
+                document.getElementById('searchInput').focus()
             } else {
                 $scope.newUser = true;
+                setTimeout(function () {
+                    document.getElementById('inputname').focus()
+                },
+                100)
             }
         }
 
@@ -190,7 +201,76 @@ angular.module('nethCheckInApp')
             $scope.newUser = false;
         }
 
+        $scope.structure = `{
+            "nome": 1,
+            "cognome": 2,
+            "email": 3,
+            "sala": 5,
+            "tipo": 7,
+            "agency": 8
+}`
+
+        $scope.exportStructure = `nome, cognome, email, sala, tipo, agency`
+
+        $scope.ignoreFirst = false
+
+        $scope.clickFileCsv = function () {
+            document.querySelector('#fileCsv').click()
+        }
+
+        var inputValChange = function () {
+            var csvInput = document.querySelector('#fileCsv')
+            $scope.fileName = csvInput.files[0].name
+            $scope.$apply()
+        }
+
+        $scope.importCSV = function () {
+            var formData = new FormData();
+            var csvInput = document.querySelector('#fileCsv')
+            formData.append('csvFile', csvInput.files[0], csvInput.files[0].name);
+            formData.append('struct', $scope.structure)            
+            formData.append('ignoreFirst', $scope.ignoreFirst)      
+            // Send the request      
+            fetch($scope.ipServer + '/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(data => {
+                $scope.showImportModal = false
+                $scope.$apply()
+            })
+            .catch(err => {console.error(error)})
+        }
+
+        $scope.exportCSV = function () {
+            // Send the request      
+            fetch($scope.ipServer + '/download?' + new URLSearchParams({
+                fields: $scope.exportStructure
+            }))
+            .then(data => {
+                data.blob().then((blob) => {
+                    const newBlob = new Blob([blob])
+                    const blobUrl = window.URL.createObjectURL(newBlob)
+                    const link = document.createElement('a')
+                    link.href = blobUrl;
+                    link.setAttribute('download', `nethcheckin.csv`)
+                    document.body.appendChild(link)
+                    link.click();
+                    link.parentNode.removeChild(link)
+                    window.URL.revokeObjectURL(blobUrl);
+                    $scope.showExportModal = false
+                    $scope.$apply()
+                });
+            })
+            .catch(err => {console.error(err)})
+        }
+
         $scope.statUpdate();
         $scope.baseUrl = "https://" + $location.host() + "/phpmyadmin/sql.php?db=nethcheckin&table=iscritti";
+        angular.element(document).ready(function () {
+            document.getElementById('searchInput').focus()
+            var csv = document.querySelector('#fileCsv')
+            csv.addEventListener('change', inputValChange)
+        });
 
     });

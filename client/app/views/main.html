@@ -14,6 +14,78 @@
     </p>
 </div>
 
+<div class="ui dimmer modals page transition {{showImportModal ? 'visible active' : 'hidden'}}">
+    <div class="ui modal transition {{showImportModal ? 'visible active' : 'hidden'}} t-6">
+        <i ng-click="showImportModal = false" class="close icon"></i>
+        <div class="header">
+          Import CSV
+        </div>
+        <div class="content">
+          <div class="description">
+            <div class="ui form">
+                <div class="grid-cols">
+                    <div class="ui action input">
+                        <input type="text" ng-disabled="true" style="width: auto !important;" ng-model="fileName">
+                        <input type="file" id="fileCsv" accept=".csv" class="hidden">
+                        <button ng-click="clickFileCsv()" class="ui teal right labeled icon button">
+                            <i class="file icon"></i>
+                            File CSV
+                        </button>
+                    </div>
+                    <div class="field">
+                        <div ng-click="ignoreFirst = !ignoreFirst" class="ui selection dropdown {{ignoreFirst ? 'teal-bord black-teal-border' : ''}}">
+                            Ignora la prima riga del file   
+                            <div class="custom-radio {{ignoreFirst ? 'teal-back' : ''}}"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="field mt-2">
+                    <label>Struttura</label>
+                    <textarea ng-model="structure" rows="15"></textarea>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="actions">
+          <div ng-click="showImportModal = false" class="ui black deny button">
+            Annulla
+          </div>
+          <div ng-click="importCSV()" class="ui positive right labeled icon button">
+            Continua
+            <i class="checkmark icon"></i>
+          </div>
+        </div>
+    </div>
+</div>
+
+<div class="ui dimmer modals page transition {{showExportModal ? 'visible active' : 'hidden'}}">
+    <div class="ui modal transition {{showExportModal ? 'visible active' : 'hidden'}} t-6">
+        <i ng-click="showExportModal = false" class="close icon"></i>
+        <div class="header">
+          Export CSV
+        </div>
+        <div class="content">
+          <div class="description">
+            <div class="ui form">
+                <div class="field">
+                    <label>Struttura</label>
+                    <textarea ng-model="exportStructure" rows="15"></textarea>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="actions">
+          <div ng-click="showExportModal = false" class="ui black deny button">
+            Annulla
+          </div>
+          <div ng-click="exportCSV()" class="ui positive right labeled icon button">
+            Continua
+            <i class="checkmark icon"></i>
+          </div>
+        </div>
+    </div>
+</div>
+
 <div ng-show="!isLoading && !isError" class="ui grid container cont" style="width: calc(1500px + 2rem) !important;">
     <div class="tablet mobile only row">
         <div class="ui borderless huge fluid menu">
@@ -50,27 +122,32 @@
     </div>
 
     <div class="row">
-        <div class="ui message">
+        <div class="ui message" style="padding-top: 4.1rem;">
             <h1 class="ui huge header">
               <img style="margin-top: -12px;" src="images/logo.png"></img>  Neth Check-in
             </h1>
 
-            <button ng-click="showNewForm()" class="ui basic icon button item big tiny-margin-top ng-scope butto" data-tooltip="Nuovo partecipante" data-position="left center"> <i class="add user icon"></i> </button><br>
+            <div id="btns-container">
+                <button ng-click="showImportModal = true" class="ui basic icon button item big tiny-margin-top" data-tooltip="Import CSV" data-position="top center"> <i class="upload icon"></i> </button>
+                <button ng-click="showExportModal = true" class="ui basic icon button item big tiny-margin-top" data-tooltip="Export CSV" data-position="top center"> <i class="share icon"></i> </button>
+
+                <button ng-click="showNewForm()" class="ui basic icon button item big tiny-margin-top ml-30 primary" data-tooltip="Nuovo partecipante" data-position="top center"> <i class="add user icon"></i> </button>
+            </div>
 
 
             <div ng-if="newUser" class="ui large form newser">
                 <div class="three fields">
                     <div class="field">
                         <label>Nome</label>
-                        <input ng-model="newname" ng-change="change()" id="inputname" type="text" placeholder="Inserisci il nome">
+                        <input ng-model="newname" ng-change="change()" id="inputname" type="text" placeholder="Inserisci il nome" autocomplete="off">
                     </div>
                     <div class="field">
                         <label>Cognome</label>
-                        <input ng-model="newsurname" ng-change="change()" id="inputsurname" type="text" placeholder="Inserisci il cognome">
+                        <input ng-model="newsurname" ng-change="change()" id="inputsurname" type="text" placeholder="Inserisci il cognome" autocomplete="off">
                     </div>
                     <div class="field">
                         <label>Azienda</label>
-                        <input ng-model="newagency" ng-change="change()" type="text" id="inputagency" placeholder="Inserisci il nome dell' azienda">
+                        <input ng-model="newagency" ng-change="change()" type="text" id="inputagency" placeholder="Inserisci il nome dell' azienda" autocomplete="off">
                     </div>
                 </div>
                 <div ng-click="createAttendee(newname, newsurname, newagency)" id="savebutton" class="ui {{disabled ? 'disabled' : ''}} medium primary button"><i class="save icon"></i> {{save == false ? 'Fallito' : save == true ? 'Modifiche salvate' : 'Salva'}}</div>
@@ -80,12 +157,12 @@
                 <div class="sixteen wide column">
 
                     <div style="margin-bottom: 15px; margin-top:20px;" class="ui large fluid icon input">
-                        <input type="text" ng-model="search.term" placeholder="Ricerca per nome, cognome, e-mail e azienda...">
+                        <input id="searchInput" type="text" ng-model="search.term" placeholder="Ricerca per nome, cognome, e-mail e azienda..." autocomplete="off">
                         <i class="search icon"></i>
                     </div>
 
                     <table ng-table="tableParams" class="ui celled table dataTable">
-                        <tr ng-repeat="user in $data | filter:search.term">
+                        <tr ng-repeat="user in $data | filter:search.term" class="{{user.sala.toLowerCase() === 'byteman' ? 'warning' : user.sala.toLowerCase() === 'robin' ? 'positive' : user.sala.toLowerCase() === 'wan' ? 'negative' : user.sala.toLowerCase() === 'super' ? 'informative' : ''}}">
                             <!--<td title="'Nome Evento'" class="single line" sortable="'nome_evento'">
                 {{user.nome_evento}}</td>-->
                             <td title="'Nome'" class="single line" sortable="'nome'">
@@ -97,7 +174,7 @@
                             <td title="'Azienda'" class="single line" sortable="'agency'">
                                 {{user.agency}}</td>
                             <td title="'Sala'" class="single line" sortable="'sala'">
-                                {{user.sala}}</td>
+                                <strong>{{user.sala}}</strong></td>
                             <td title="'Tipo'" class="single line" sortable="'tipo'">
                                 {{user.tipo}}</td>
                             <td style="width: 258px;" title="'Stato'" class="single line" sortable="'stato'">
