@@ -1,0 +1,9 @@
+FROM node:lts
+WORKDIR /app/server
+COPY server ./server
+COPY package.json .
+COPY package-lock.json .
+COPY node_modules ./node_modules
+COPY server.js .
+COPY update.js .
+CMD ["npm", "start"]

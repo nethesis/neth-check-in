@@ -1,0 +1,52 @@
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+      MYSQL_DATABASE: nethcheckin
+      MYSQL_USER: nethcheckin
+      MYSQL_PASSWORD: nethcheckin
+    ulimits:
+      nofile: 1048576
+    volumes:
+      - ./server/db/nethcheckin.sql:/docker-entrypoint-initdb.d/nethcheckin.sql:ro
+      - db-data:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: nethcheckin
+      PMA_PASSWORD: nethcheckin
+    ports:
+      - 127.0.0.1:8081:80
+  server:
+    build:
+      context: ./server
+      dockerfile: Containerfile
+    restart: unless-stopped
+    stop_signal: SIGKILL
+    depends_on:
+      - db
+    volumes:
+      - ./config:/app/config:ro
+    ports:
+      - 8080:8080
+  client:
+    build:
+      context: ./client
+      dockerfile: Containerfile
+    stop_signal: SIGKILL
+    depends_on:
+      - server
+    ports:
+      - 80:9000
+      - 35729:35729
+    volumes:
+      - ./config/config.js:/client/app/config.js:ro
+
+
+volumes:
+  db-data: { }
