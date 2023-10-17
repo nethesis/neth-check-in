@@ -9,5 +9,4 @@ COPY bower_components bower_components
 COPY test test
 COPY Gruntfile.js .
 COPY bower.json .
-RUN grunt --force
 CMD grunt serve
