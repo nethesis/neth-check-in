@@ -28,6 +28,10 @@ services:
       dockerfile: Containerfile
     restart: unless-stopped
     stop_signal: SIGKILL
+    develop:
+      watch:
+        - action: rebuild
+          path: ./server
     depends_on:
       - db
     volumes:
@@ -39,6 +43,15 @@ services:
       context: ./client
       dockerfile: Containerfile
     stop_signal: SIGKILL
+    develop:
+      watch:
+        - action: rebuild
+          path: ./client
+          ignore:
+            - app
+        - action: sync
+          path: ./client/app
+          target: /client/app
     depends_on:
       - server
     ports:
@@ -46,7 +59,12 @@ services:
       - 35729:35729
     volumes:
       - ./config/config.js:/client/app/config.js:ro
-
+  drivers:
+    build:
+      context: ./drivers
+      dockerfile: Dockerfile
+    ports:
+      - 8082:80
 
 volumes:
   db-data: { }

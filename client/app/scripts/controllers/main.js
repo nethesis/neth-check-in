@@ -69,7 +69,7 @@ angular.module('nethCheckInApp')
         });
 
 
-        var printPDF = function (name, surname, agency, type) {
+        var printPDF = function (name, surname, agency, type, location) {
 
             if (!agency) agency = ""
             var isProspect = type && type.toLowerCase() === 'prospect'
@@ -108,7 +108,7 @@ angular.module('nethCheckInApp')
             var pdf = new jsPDF({
                 orientation: 'l',
                 unit: 'mm',
-                format: [62, 29]
+                format: [62, 32]
             })
 
             var pages = 2
@@ -131,21 +131,25 @@ angular.module('nethCheckInApp')
                 pdf.setFontSize(12);
                 var textAgency = agency
                 if (isSponsor) textAgency = agency + '(S)'
-                pdf.text(textAgency, fromLeft, 19 + fromTop);
-                if (isProspect) pdf.line(fromLeft-1, 24, agency.length * 4, 24);
+                pdf.text(textAgency, fromLeft, 18 + fromTop);
+
+                pdf.setFontSize(9);
+                pdf.text(location, fromLeft, 23 + fromTop);
+
+                if (isProspect) pdf.line(fromLeft-1, 29, agency.length * 4, 29);
             }
 
             pdf.autoPrint();
             $scope.mywindow = window.open(pdf.output('bloburl'), '_blank');
         }
 
-        $scope.functionCheckin = function(stato, id, name, surname, agency, type) {
+        $scope.functionCheckin = function(stato, id, name, surname, agency, type, location) {
             $http.get($scope.ipServer + '/printed/' + id).then(function(successData) {
                 //print
             }, function(errorData) {
                 //errpr
             });
-            printPDF(name, surname, agency, type)
+            printPDF(name, surname, agency, type, location)
         }
 
         $scope.functionRePrint = function(id) {
@@ -197,7 +201,7 @@ angular.module('nethCheckInApp')
                 $scope.save = false;
                 return;
             }
-            printPDF(newname, newsurname, newagency)
+            printPDF(newname, newsurname, newagency, '', 'do')
             $scope.newUser = false;
         }
 
