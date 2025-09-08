@@ -6,10 +6,8 @@ services:
       MYSQL_DATABASE: nethcheckin
       MYSQL_USER: nethcheckin
       MYSQL_PASSWORD: nethcheckin
-    ulimits:
-      nofile: 1048576
     volumes:
-      - ./server/db/nethcheckin.sql:/docker-entrypoint-initdb.d/nethcheckin.sql:ro
+      - ./server/db/nethcheckin.sql:/docker-entrypoint-initdb.d/nethcheckin.sql:ro,z
       - db-data:/var/lib/mysql
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -55,10 +53,10 @@ services:
     depends_on:
       - server
     ports:
-      - 80:9000
+      - 8888:9000
       - 35729:35729
     volumes:
-      - ./config/config.js:/client/app/config.js:ro
+      - ./config/config.js:/client/app/config.js:ro,z
   drivers:
     build:
       context: ./drivers

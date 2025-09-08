@@ -2,53 +2,48 @@
 
 Client and Server for Nethesis partner meeting badges 2017
 
-**Client Installation:**
+The software can be run both with docker-compose in rootfull mode and podman-compose in rootless mode.
 
-- Install node, npm
-- Install mysql
-- Install phpmyadmin (https://wiki.nethserver.org/doku.php?id=phpmyadmin)
-- Clone repository
-- `npm install`
-- `npm install -g grunt-cli`
-- `config set neth-check-in service status enabled TCPPort 9000,8080 access green,red`
-- `signal-event runlevel-adjust; signal-event firewall-adjust`
-- Change $scope.ipServer var with the server location ip addr in app/scripts/controllers/main.js and 
-- Replace socket url in app/index.html
+### Using podman-compose
 
-**Server Installation**
+Podman compose will run the containers in rootless mode, so you need to have podman and podman-compose installed.
 
-- Requires mysql and node already installed
-- `npm install`
-- Create database **nethcheckin** in https://ip/phpmyadmin log with mysql user and pass
-- Import db/nethcheckin.sql 
-- Modify config.js in config dir with database user and pass
-- Export Atendees from csv report from eventbrite with: name surname status company
-- Import csv file in `iscritti` table using phpmyadmin with:
- 1. format CSV using LOAD DATA 
- 2. skipping 1st line 
- 3. Column separated with `,` 
- 4. Column escaped and enclose with empty 
- 5. Lines terminated with `auto` 
- 6. Column name: ordine, nome, cognome, email, stato, agency
- 
- **Start App**
- 
- - Run server with` node server.js` in server dir
- 
- **System**
- 
- `[Unit]`
- `Description=NethCheck-in`
- `Documentation=http://www.nethesis.it`
- `After=network.target`
- 
- `[Service]`
- `User=root`
- `WorkingDirectory=/root/neth-check-in/server`
- `ExecStart=/usr/bin/node /root/neth-check-in/server/server.js`
- `Restart=on-failure`
- 
- `[Install]`
- `WantBy=multi-user.target`
- 
- 
+To run with podman-compose:
+```bash
+podman-compose up -d
+```
+
+To stop and remove containers:
+```bash
+podman-compose down
+```
+
+### Using docker-compose
+
+Docker will run the containers in rootfull mode, so you need to have docker and docker-compose installed.
+
+To run with docker-compose:
+```bash
+docker-compose up -d
+```
+
+To stop and remove containers:
+```bash
+docker-compose down
+```
+
+If the database does not run, you may need to add the following inside the docker-composer:
+```
+ulimits:
+  nofile: 1048576
+```
+
+Note: this will not work with podman-compose.
+
+### Application access
+
+The compose will expose the following service:
+- Web UI: http://localhost:8888, websocket port: 35729
+- Server: http://localhost:8080
+- PHPMyAdmin: http://localhost:8081
+- Printer driver: http://
