@@ -35,7 +35,8 @@ CREATE TABLE IF NOT EXISTS `iscritti` (
   `sala` varchar(255) DEFAULT NULL, /* 'Byteman','Robi','Wan','Super' */
   `tipo` varchar(255) DEFAULT NULL, /* 'Partner','Prospect','Sponsor' */
   `agency` varchar(255) DEFAULT NULL,
-  `id` bigint(12) NOT NULL
+  `id` bigint(12) NOT NULL,
+  `cod_partecipante` bigint(15) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --

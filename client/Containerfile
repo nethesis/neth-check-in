@@ -1,0 +1,12 @@
+FROM node:10
+WORKDIR /client
+COPY package.json .
+COPY node_modules node_modules
+RUN npm install \
+    && npm install -g grunt-cli
+COPY app app
+COPY bower_components bower_components
+COPY test test
+COPY Gruntfile.js .
+COPY bower.json .
+CMD grunt serve

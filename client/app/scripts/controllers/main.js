@@ -7,6 +7,8 @@
  * # MainCtrl
  * Controller of the nethCheckInApp
  */
+
+
 angular.module('nethCheckInApp')
     .controller('MainCtrl', function($scope, $filter, $http, NgTableParams, $location) {
 
@@ -69,7 +71,7 @@ angular.module('nethCheckInApp')
         });
 
 
-        var printPDF = function (name, surname, agency, type) {
+        var printPDF = function (name, surname, agency, type, location, attendeeCode) {
 
             if (!agency) agency = ""
             var isProspect = type && type.toLowerCase() === 'prospect'
@@ -105,10 +107,12 @@ angular.module('nethCheckInApp')
             var fromLeft = 3
             var fromTop = 4
 
+            // old configurations: 
+            // format: [62, 32]
             var pdf = new jsPDF({
                 orientation: 'l',
                 unit: 'mm',
-                format: [62, 29]
+                format: [62, 50]
             })
 
             var pages = 2
@@ -119,6 +123,23 @@ angular.module('nethCheckInApp')
                 pdf.addFileToVFS('Changa.ttf', CHANGA);
                 pdf.addFont('Changa.ttf', 'Changa', 'normal');
                 pdf.setFont('Changa', 'normal');
+
+                var fromLeft = 3;
+                var fromTop = 24; 
+
+                var textAttendeeCode = String(attendeeCode)
+                let q = qrcode(0, 'H');
+                q.addData(textAttendeeCode);
+                q.make();
+
+                const imgTag = q.createImgTag(6); 
+                const imgSrc = imgTag.match(/src="(.*?)"/)[1]; // extract base64
+
+                const qrSize = 24;
+                const qrX = 2; 
+                const qrY = 0;
+
+                pdf.addImage(imgSrc, 'PNG', qrX, qrY, qrSize, qrSize);
 
                 pdf.setFontSize(21);
                 pdf.text(name, fromLeft, 5 + fromTop);
@@ -131,21 +152,37 @@ angular.module('nethCheckInApp')
                 pdf.setFontSize(12);
                 var textAgency = agency
                 if (isSponsor) textAgency = agency + '(S)'
-                pdf.text(textAgency, fromLeft, 19 + fromTop);
-                if (isProspect) pdf.line(fromLeft-1, 24, agency.length * 4, 24);
+                pdf.text(textAgency, fromLeft, 18 + fromTop);
+
+                pdf.setFontSize(11);
+
+                const locationX = qrX + qrSize + 3; 
+                const locationY = qrY + 6; 
+
+                pdf.text(location, locationX, locationY);
+
+                if (isProspect) {
+                        const lineY = 19 + fromTop; 
+                        const lineLength = textAgency.length * 2.8; 
+                        pdf.setDrawColor(0);
+                        pdf.setLineWidth(0.5);
+                        pdf.line(fromLeft, lineY, fromLeft + lineLength, lineY);
+                }      
+                
             }
 
             pdf.autoPrint();
             $scope.mywindow = window.open(pdf.output('bloburl'), '_blank');
         }
 
-        $scope.functionCheckin = function(stato, id, name, surname, agency, type) {
+        $scope.functionCheckin = function(stato, id, name, surname, agency, type, location) {
+            console.log("+++++")
             $http.get($scope.ipServer + '/printed/' + id).then(function(successData) {
                 //print
             }, function(errorData) {
                 //errpr
             });
-            printPDF(name, surname, agency, type)
+            printPDF(name, surname, agency, type, location)
         }
 
         $scope.functionRePrint = function(id) {
@@ -184,21 +221,25 @@ angular.module('nethCheckInApp')
             $scope.save = undefined;
         }
 
+        
         $scope.createAttendee = function(newname, newsurname, newagency) {
             if (newname && newsurname && newagency) {
                 $http.get($scope.ipServer + '/newattendee/' + newname + '/' + newsurname + '/' + newagency).then(function(successData) {
                     $scope.save = true;
                     $scope.disabled = true;
+                    let serverRes = successData.data.message;
+                    let code = serverRes.codice;
+                    let room = serverRes.sala;
+                    let type = serverRes.tipo;
+                    $scope.newUser = false;
+                    printPDF(newname, newsurname, newagency, type, room, code)
                 }, function(errorData) {
                     $scope.save = false;
                     return;
                 });
             } else {
                 $scope.save = false;
-                return;
             }
-            printPDF(newname, newsurname, newagency)
-            $scope.newUser = false;
         }
 
         $scope.structure = `{

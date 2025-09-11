@@ -162,7 +162,7 @@
                     </div>
 
                     <table ng-table="tableParams" class="ui celled table dataTable">
-                        <tr ng-repeat="user in $data | filter:search.term" class="{{user.sala.toLowerCase() === 'byteman' ? 'warning' : user.sala.toLowerCase() === 'robin' ? 'positive' : user.sala.toLowerCase() === 'wan' ? 'negative' : user.sala.toLowerCase() === 'super' ? 'informative' : ''}}">
+                        <tr ng-repeat="user in $data | filter:search.term" class="{{user.sala.toLowerCase() === 'sala violante' ? 'warning' : user.sala.toLowerCase() === 'sala ginevra' ? 'positive' : user.sala.toLowerCase() === 'sala concordia' ? 'negative' : user.sala.toLowerCase() === 'sala polissena a' ? 'informative' : ''}}">
                             <!--<td title="'Nome Evento'" class="single line" sortable="'nome_evento'">
                 {{user.nome_evento}}</td>-->
                             <td title="'Nome'" class="single line" sortable="'nome'">
@@ -178,7 +178,7 @@
                             <td title="'Tipo'" class="single line" sortable="'tipo'">
                                 {{user.tipo}}</td>
                             <td style="width: 258px;" title="'Stato'" class="single line" sortable="'stato'">
-                                <span class="{{user.stato == 'Check-in eseguito' ? 'red' : 'green action'}}"><button ng-click="functionCheckin(user.stato,user.id,user.nome,user.cognome,user.agency,user.tipo)" class="ui blue button medium {{user.stato == 'Check-in eseguito' ? 'hidden' : 'show'}}">Esegui check-in</button><div class="ui buttons {{user.stato == 'Check-in eseguito' ? 'show' : 'hidden'}}"><button class="ui button disabled medium">Check-in eseguito</button><button ng-click="functionRePrint(user.id)" class="ui positive button yellow medium">Ripristina</button></div></span>
+                                <span class="{{user.stato == 'Check-in eseguito' ? 'red' : 'green action'}}"><button ng-click="functionCheckin(user.stato,user.id,user.nome,user.cognome,user.agency,user.tipo,user.sala)" class="ui blue button medium {{user.stato == 'Check-in eseguito' ? 'hidden' : 'show'}}">Esegui check-in</button><div class="ui buttons {{user.stato == 'Check-in eseguito' ? 'show' : 'hidden'}}"><button class="ui button disabled medium">Check-in eseguito</button><button ng-click="functionRePrint(user.id)" class="ui positive button yellow medium">Ripristina</button></div></span>
                             </td>
                         </tr>
                     </table>
