@@ -69,7 +69,7 @@ angular.module('nethCheckInApp')
         });
 
 
-        var printPDF = function (name, surname, agency, type, location) {
+        var printPDF = function (name, surname, agency, type, location, attendeeCode) {
 
             if (!agency) agency = ""
             var isProspect = type && type.toLowerCase() === 'prospect'
@@ -105,10 +105,12 @@ angular.module('nethCheckInApp')
             var fromLeft = 3
             var fromTop = 4
 
+	        // old configurations:
+	        // format: [62, 32] 
             var pdf = new jsPDF({
                 orientation: 'l',
                 unit: 'mm',
-                format: [62, 32]
+                format: [62, 50]
             })
 
             var pages = 2
@@ -119,6 +121,22 @@ angular.module('nethCheckInApp')
                 pdf.addFileToVFS('Changa.ttf', CHANGA);
                 pdf.addFont('Changa.ttf', 'Changa', 'normal');
                 pdf.setFont('Changa', 'normal');
+		
+		        var fromLeft = 3;
+		        var fromTop = 24;
+		        var textAttendeeCode = String(attendeeCode)
+		        let q = qrcode(0, 'H');
+		        q.addData(textAttendeeCode);
+	            q.make();
+
+        		const imgTag = q.createImgTag(6);
+		        const imgSrc = imgTag.match(/src="(.*?)"/)[1];
+
+    		    const qrSize = 24;
+    		    const qrX = 2;
+    		    const qrY = 0;
+
+    		    pdf.addImage(imgSrc, 'PNG', qrX, qrY, qrSize, qrSize);
 
                 pdf.setFontSize(21);
                 pdf.text(name, fromLeft, 5 + fromTop);
@@ -133,10 +151,18 @@ angular.module('nethCheckInApp')
                 if (isSponsor) textAgency = agency + '(S)'
                 pdf.text(textAgency, fromLeft, 18 + fromTop);
 
-                pdf.setFontSize(9);
-                pdf.text(location, fromLeft, 23 + fromTop);
+                pdf.setFontSize(11);
+		        const locationX = qrX + qrSize + 3;
+		        const locationY = qrY + 6;
+                pdf.text(location, locationX, locationY);
 
-                if (isProspect) pdf.line(fromLeft-1, 29, agency.length * 4, 29);
+                if (isProspect) {
+			        const lineY = 19 + fromTop;
+			        const lineLength = textAgency.length * 2.8;
+			        pdf.setDrawColor(0);
+			        pdf.setLineWidth(0.5);
+			        pdf.line(fromLeft, lineY, fromLeft + lineLength, lineY);
+		        }
             }
 
             pdf.autoPrint();
@@ -193,16 +219,19 @@ angular.module('nethCheckInApp')
                 $http.get($scope.ipServer + '/newattendee/' + newname + '/' + newsurname + '/' + newagency).then(function(successData) {
                     $scope.save = true;
                     $scope.disabled = true;
+		            let serverRes = successData.data.message;
+		            let code = serverRes.codice;
+		            let room = serverRes.sala;
+		            let type = serverRes.tipo;
+            	    $scope.newUser = false;
+            	    printPDF(newname, newsurname, newagency, type, room, code)
                 }, function(errorData) {
                     $scope.save = false;
                     return;
                 });
             } else {
                 $scope.save = false;
-                return;
             }
-            printPDF(newname, newsurname, newagency, '', 'do')
-            $scope.newUser = false;
         }
 
         $scope.structure = `{
