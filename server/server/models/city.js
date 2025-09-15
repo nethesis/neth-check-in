@@ -31,6 +31,29 @@ function City() {
 
     this.updateStatus = function(id, stat, res) {
         connection.acquire(function(err, con) {
+            let toForward = {};
+            let skip = false;
+
+            if (stat !== "Partecipante") {
+                con.query('SELECT cod_partecipante FROM iscritti WHERE id = ' + id, function(err, result) {
+                    if (err || result <= 0) {
+                        res.status(500).json({
+                            message: 'DB select error ' + er
+                        });
+                        skip = true;
+                    } else {
+                        toForward = {
+                            codice: result[0].cod_partecipante
+                        }
+                    }
+                })
+            }
+            
+            if (skip) {
+                con.release();
+                return;
+            }
+
             con.query('UPDATE iscritti SET stato="' + stat + '" WHERE id =' + id, function(err, result) {
                 con.release();
                 if (err) {
@@ -40,7 +63,8 @@ function City() {
                 } else {
                     res.status(201).json({
                         message: 'City created successfully',
-                        id: result.insertId
+                        id: result.insertId,
+                        code: toForward
                     });
                     parent.emit('iscrittiUpdate');
                 }
@@ -68,31 +92,9 @@ function City() {
 
 
     this.insertAttendee = function(name, surname, agency, res) {
-	    let skip = false;
 
         if (name != "" && surname != "" && agency != "") {
            connection.acquire(function(err, conn) {
-		        let toForward = {};
-		        conn.query('SELECT cod_partecipante, sala, tipo FROM iscritti WHERE nome = "' + name + '" AND cognome = "' + surname + '" AND agency = "' + agency + '"', function(err, result) {
-		   	        if (err || result.length <= 0) {
-				        skip = true;
-				        res.status(500).json({
-					        message: 'DB select error: ' + err
-				        })
-			        } else {
-                            toForward = {
-                                codice: result[0].cod_partecipante,
-                                sala:   result[0].sala,
-                                tipo:   result[0].tipo
-                            };
-			        }
-		        })
-
-                if (skip) {
-                    conn.release();
-                    return;
-                }
-
                 conn.query('INSERT INTO iscritti (nome, cognome, stato, agency) VALUES ("' + name + '", "' + surname + '", "Check-in eseguito", "' + agency + '")', function(err, result) {
                     conn.release();
                     if (err) {
@@ -101,7 +103,7 @@ function City() {
                         });
                     } else {
                         res.status(201).json({
-                            message: toForward
+                            message: result
                         });
                         parent.emit('iscrittiUpdate');
                     }

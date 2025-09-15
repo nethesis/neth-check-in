@@ -121,20 +121,24 @@ angular.module('nethCheckInApp')
                 pdf.addFileToVFS('Changa.ttf', CHANGA);
                 pdf.addFont('Changa.ttf', 'Changa', 'normal');
                 pdf.setFont('Changa', 'normal');
-		
-		        var textAttendeeCode = String(attendeeCode)
-		        let q = qrcode(0, 'H');
-		        q.addData(textAttendeeCode);
-	            q.make();
 
-        		const imgTag = q.createImgTag(6);
-		        const imgSrc = imgTag.match(/src="(.*?)"/)[1];
-
-    		    const qrSize = 24;
+                const qrSize = 24;
     		    const qrX = 2;
     		    const qrY = 0;
+		
+                if (attendeeCode != -1) {
+                    var textAttendeeCode = String(attendeeCode)
+		            let q = qrcode(0, 'H');
+		            q.addData(textAttendeeCode);
+	                q.make();
 
-    		    pdf.addImage(imgSrc, 'PNG', qrX, qrY, qrSize, qrSize);
+        		    const imgTag = q.createImgTag(6);
+		            const imgSrc = imgTag.match(/src="(.*?)"/)[1];
+
+    		        
+
+    		        pdf.addImage(imgSrc, 'PNG', qrX, qrY, qrSize, qrSize);
+                }
 
                 pdf.setFontSize(21);
                 pdf.text(name, fromLeft, 5 + fromTop);
@@ -169,11 +173,11 @@ angular.module('nethCheckInApp')
 
         $scope.functionCheckin = function(stato, id, name, surname, agency, type, location) {
             $http.get($scope.ipServer + '/printed/' + id).then(function(successData) {
-                //print
+                let serverResponse = successData.data;
+                printPDF(name, surname, agency, type, location, serverResponse.code.codice)
             }, function(errorData) {
-                //errpr
+                // error handling
             });
-            printPDF(name, surname, agency, type, location)
         }
 
         $scope.functionRePrint = function(id) {
@@ -217,12 +221,8 @@ angular.module('nethCheckInApp')
                 $http.get($scope.ipServer + '/newattendee/' + newname + '/' + newsurname + '/' + newagency).then(function(successData) {
                     $scope.save = true;
                     $scope.disabled = true;
-		            let serverRes = successData.data.message;
-		            let code = serverRes.codice;
-		            let room = serverRes.sala;
-		            let type = serverRes.tipo;
             	    $scope.newUser = false;
-            	    printPDF(newname, newsurname, newagency, type, room, code)
+            	    printPDF(newname, newsurname, newagency, "", "", -1)
                 }, function(errorData) {
                     $scope.save = false;
                     return;
