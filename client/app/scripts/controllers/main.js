@@ -103,7 +103,7 @@ angular.module('nethCheckInApp')
             }
 
             var fromLeft = 3
-            var fromTop = 4
+            var fromTop = 24
 
 	        // old configurations:
 	        // format: [62, 32] 
@@ -122,8 +122,6 @@ angular.module('nethCheckInApp')
                 pdf.addFont('Changa.ttf', 'Changa', 'normal');
                 pdf.setFont('Changa', 'normal');
 		
-		        var fromLeft = 3;
-		        var fromTop = 24;
 		        var textAttendeeCode = String(attendeeCode)
 		        let q = qrcode(0, 'H');
 		        q.addData(textAttendeeCode);

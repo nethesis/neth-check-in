@@ -74,22 +74,22 @@ function City() {
            connection.acquire(function(err, conn) {
 		        let toForward = {};
 		        conn.query('SELECT cod_partecipante, sala, tipo FROM iscritti WHERE nome = "' + name + '" AND cognome = "' + surname + '" AND agency = "' + agency + '"', function(err, result) {
-		   	        if (err) {
+		   	        if (err || result.length <= 0) {
 				        skip = true;
 				        res.status(500).json({
 					        message: 'DB select error: ' + err
 				        })
 			        } else {
-				        toForward = {
-					        codice: result[0].cod_partecipante,
-					        sala:   result[0].sala,
-					        tipo:   result[0].tipo
-				        };
+                            toForward = {
+                                codice: result[0].cod_partecipante,
+                                sala:   result[0].sala,
+                                tipo:   result[0].tipo
+                            };
 			        }
-
 		        })
 
                 if (skip) {
+                    conn.release();
                     return;
                 }
 
