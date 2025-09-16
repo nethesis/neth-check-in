@@ -53,8 +53,7 @@ HUBSPOT_COMPANY_FIELD = "Nome azienda"
 OUTPUT_COLUMNS = ["ordine","nome","cognome","email","sala","tipo","agency","id"]
 
 EVENTBRITE_SALA_FIELDS = [
-    "Scegli la Sala di Approfondimento",
-    "Seleziona la sala di tuo interesse",
+    "Scegli la Sala di Approfondimento"
 ]
 
 # Mapping of verbose schedule descriptions to standardized room labels
@@ -137,9 +136,8 @@ def build_output_rows(eb_rows: List[Dict[str,str]], hs_index: Dict[str,Dict[str,
         sala_raw = choose_sala(r)
         sala = SALA_REMAP.get(sala_raw, sala_raw)
         # Additional rule: if attendee indicated participation in afternoon session set sala to Sala Piazza
-        afternoon_field = "Parteciperò alla sessione pomeridiana | 10 ottobre"
-        afternoon_value = (r.get(afternoon_field) or '').strip()
-        if afternoon_value == afternoon_field:
+        afternoon_value = (r.get("Parteciperò alla sessione pomeridiana | 10 ottobre") or '').strip()
+        if afternoon_value == "Sessione commerciale: novità, case study e strumenti per la vendita":
             sala = "Sala Piazza"
         if sala == '':
             missing_sala += 1
