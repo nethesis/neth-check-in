@@ -47,3 +47,13 @@ The compose will expose the following service:
 - Server: http://localhost:8080
 - PHPMyAdmin: http://localhost:8081
 - Printer driver: http://
+
+### Importing Data Into The Database
+To populate the database it is better to run the following Python script, located in the `script` package.
+The script takes a CSV file ad builds a `.sql` file containing all the `INSERT` statements you need to later upload into phpMyAdmin.
+
+
+From a terminal, go into th `script` folder and run:
+```bash
+python3 csv_loader.py path/to/your_file.csv > your_output.sql
+```
