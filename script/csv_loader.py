@@ -11,11 +11,10 @@
 #    in single quotes and any internal single quotes are automatically escaped.
 #
 # How to Run:
-#  Basic (auto output):
-#    python csv_loader.py <origin_file.csv>
-#    -> generates <origin_file>.sql alongside the input (replacing .csv if present)
-#  Custom output path:
-#    python csv_loader.py <origin_file.csv> <destination_file.sql>
+#  Basic (auto input/output):
+#    python csv_loader.py              # reads ./nethcheckin.csv by default and writes ./nethcheckin.sql
+#  Provide a custom input file (and optional output):
+#    python csv_loader.py <origin_file.csv> [destination_file.sql]
 #
 #  Previous shell redirection still works but is no longer required.
 
@@ -48,13 +47,18 @@ csv_columns = [
 
 class CSVFetcher:
     def __init__(self):
+        # Default input filename when none provided
+        default_csv = 'nethcheckin.csv'
         if len(sys.argv) < 2:
-            print("Usage: python csv_loader.py <input.csv> [output.sql]")
-            sys.exit(1)
-        self.csv_file = sys.argv[1]
+            self.csv_file = default_csv
+            print(f"No input file specified, using default: {self.csv_file}")
+        else:
+            self.csv_file = sys.argv[1]
+
         if not os.path.isfile(self.csv_file):
             print(f"Input file not found: {self.csv_file}")
             sys.exit(1)
+
         # Determine output path
         if len(sys.argv) >= 3:
             self.out_file = sys.argv[2]
