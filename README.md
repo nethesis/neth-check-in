@@ -48,111 +48,6 @@ The compose will expose the following service:
 - PHPMyAdmin: http://localhost:8081
 - Printer driver: http://
 
-
-
-### End-to-end: loading data (Eventbrite -> DB -> CodeREADr)
-
-Follow these steps to import attendees exported from Eventbrite and keep both the local MySQL database and the CodeREADr database in sync for the sponsor mobile app:
-
-1. Export CSV from Eventbrite
-
-  - In Eventbrite, export the attendee list to CSV.
-  - Open the CSV in a spreadsheet editor and remove any extra columns not required by our processing (we expect the following header names):
-
-```
-ordine,nome,cognome,email,stato,sala,tipo,agency,id
-```
-
-  - Save the cleaned file to a canonical path used for imports, e.g. `data/iscritti_import.csv`.
-
-2. Create SQL using `csv_loader.py` and upload to phpMyAdmin
-
-  - From the project root run:
-
-```bash
-python3 script/csv_loader.py data/iscritti_import.csv
-```
-
-  - This will create `data/iscritti_import.sql` next to the CSV file. Open phpMyAdmin (default: http://localhost:8081), select the `nethcheckin` database and import the generated `.sql` file. The script will emit a `TRUNCATE TABLE iscritti;` followed by `INSERT` statements, so the table will be replaced with the new import.
-
-3. Push the same IDs to CodeREADr for the sponsor mobile app
-
-  - Ensure to retrieve your CodeREADr API key and database id from your CodeREADr account.
-
-  - Use the cleaned CSV that was used to generate the SQL and run:
-
-```bash
-python3 script/codereadr_push.py --database-id 1326835 --api-key YOUR_KEY data/iscritti_import.csv
-```
-
-  - By default the script clears the remote database and uploads the generated CSV mapping each `id` to response `Contatto salvato` and validity `1`. Use `--no-clear` to preserve existing values or `--dry-run` to preview the generated CSV only.
-
-Notes:
- - Keep a copy of the original Eventbrite export if you need to audit fields later.
- - The import process will replace the `iscritti` table contents; make backups of your DB if needed.
- - If you manage large exports (>10k rows) consider using the `is_deferred` upload option via the CodeREADr API - the current script uses the synchronous upload endpoint.
-
-#### csv_loader.py
-
-To populate the database it is better to run the following Python script, located in the `script` package.
-The script takes a CSV file ad builds a `.sql` file containing all the `INSERT` statements you need to later upload into phpMyAdmin.
-
-From a terminal, go into the `script` folder and run:
-```bash
-python3 csv_loader.py path/to/your_file.csv
-```
-This will create `path/to/your_file.sql` automatically next to the source file.
-
-Optionally specify a custom output filename:
-```bash
-python3 csv_loader.py path/to/your_file.csv custom_output.sql
-```
-Legacy shell redirection still works but is no longer required.
-
-#### codereadr_push.py
-
-If you need to synchronize attendee IDs to a CodeREADr database you can use `codereadr_push.py`.
-
-Source CSV required columns (header names exactly):
-```
-ordine,nome,cognome,email,stato,sala,tipo,agency,id
-```
-
-The script builds a temporary (or specified) CSV with the 3 fields expected by CodeREADr (`value,response,validity`) mapping each `id` to a static response "Contatto salvato" and validity `1`, then (optionally) clears the remote database and uploads the CSV.
-
-Environment variables (fallback if flags are omitted):
-```
-CODEREADR_API_KEY
-CODEREADR_DATABASE_ID
-```
-
-Basic usage:
-```bash
-python3 codereadr_push.py attendees.csv --database-id 12345 --api-key YOUR_KEY
-```
-
-Keep generated CSV and skip clearing:
-```bash
-python3 codereadr_push.py attendees.csv --out export_codereadr.csv --no-clear --api-key YOUR_KEY --database-id 12345
-```
-
-Dry run (build CSV only, no API calls):
-```bash
-python3 codereadr_push.py attendees.csv --dry-run --out preview.csv
-```
-
-Run with environment variables:
-```bash
-export CODEREADR_API_KEY=YOUR_KEY
-export CODEREADR_DATABASE_ID=12345
-python3 codereadr_push.py attendees.csv
-```
-
-Additional flags:
-- `--verbose` for extra logging
-- `--no-clear` to avoid deleting existing values before upload
-- `--dry-run` to generate the CSV only
-
 ### Scripts: defaults and behavior
 
 This project includes several helper scripts in the `script/` folder. Below are the current defaults and important behaviors added recently.
@@ -191,11 +86,19 @@ A convenience bash script is provided to run the common sequence using the defau
 - Merged normalized CSV produced: `nethcheckin.csv`
 - SQL produced: `nethcheckin.sql`
 
+First, setup CodeREADr credentials as environment variables:
+
+```bash
+export CODEREADR_API_KEY=your_api_key_here
+export CODEREADR_DATABASE_ID=your_database_id_here
+```
+
 The script is: `script/run_pipeline.sh` and performs these steps:
 
 1) Merge Eventbrite + HubSpot into `nethcheckin.csv` using `eventbrite_hubspot_merge.py`
 2) Generate `nethcheckin.sql` from `nethcheckin.csv` using `csv_loader.py`.
-3) Automatically upload IDs to CodeREADr using `codereadr_push.py` (the script runs the upload non-interactively by default). You can change this behavior by calling `codereadr_push.py` manually with `--no-clear` or `--dry-run`.
+3) Automatically upload IDs to CodeREADr using `codereadr_push.py`.
+4) Load the generated SQL into the running database container if available, otherwise print the command to run manually.
 
 Run the pipeline from the project root:
 
@@ -208,26 +111,6 @@ Manual steps and safety notes:
 - Verify the source CSVs are present at the default paths before running: `eventbrite.csv` and `hubspot.csv`.
 - The pipeline will generate `${OUT_CSV%.*}.sql` (usually `nethcheckin.sql`). The SQL includes a `TRUNCATE TABLE iscritti;` line — back up your database before importing if needed.
 - After SQL generation the script will attempt to import the `.sql` into a running container named `neth-check-in_db_1` automatically. Priority for container runtimes is: `podman` (preferred), `odman`, then `docker`.
-- If such container is running the script executes (for example via podman):
-
-```bash
-podman exec -i neth-check-in_db_1 mysql -u nethcheckin -pnethcheckin nethcheckin < nethcheckin.sql
-```
-
-- If the container is not running, the script prints the command you can run manually using the detected runtime (or a plain mysql client).
-- The CodeREADr upload will clear the remote database by default. Provide credentials via environment variables or flags:
-
-```bash
-export CODEREADR_API_KEY=YOUR_KEY
-export CODEREADR_DATABASE_ID=12345
-```
-
-- If you prefer to skip the interactive confirmation and run the CodeREADr upload with flags, call `codereadr_push.py` directly:
-
-```bash
-python3 script/codereadr_push.py nethcheckin.csv --database-id 12345 --api-key YOUR_KEY --no-clear
-```
-
-If you'd like, I can also add a non-interactive mode to `run_pipeline.sh` (for CI or unattended runs) that accepts a `--yes`/`--no-upload` flag — tell me if you want that.
+- The CodeREADr upload will clear the remote database before importing new data.
 
 
