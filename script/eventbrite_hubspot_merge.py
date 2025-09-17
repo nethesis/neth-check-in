@@ -118,9 +118,10 @@ def build_output_rows(eb_rows: List[Dict[str,str]], hs_index: Dict[str,Dict[str,
     missing_sala = 0
     for r in eb_rows:
         ordine = (r.get("Ordine n.") or '').strip()
-        nome = (r.get("Nome") or '').strip()
-        cognome = (r.get("Cognome") or '').strip()
-        email = (r.get("E-mail") or '').strip()
+        # Capitalize first letter of names and surnames: users put them in random case
+        nome = (r.get("Nome") or '').strip().lower().title()
+        cognome = (r.get("Cognome") or '').strip().lower().title()
+        email = (r.get("E-mail") or '').strip().lower()
         sala_raw = choose_sala(r)
         sala = SALA_REMAP.get(sala_raw, sala_raw)
         # Additional rule: if attendee indicated participation in afternoon session set sala to Sala Piazza
@@ -139,11 +140,9 @@ def build_output_rows(eb_rows: List[Dict[str,str]], hs_index: Dict[str,Dict[str,
             tipo = "Prospect"
         else:
             tipo = "Partner"
-        if not agency and hs_row:
-            agency = (hs_row.get(HUBSPOT_COMPANY_FIELD) or '').strip()
         if not eid:
             # fallback: compose surrogate id if missing
-            eid = f"{ordine}-{email}" if ordine and email else ordine or email or ''
+            eid = ordine
         out.append({
             'ordine': ordine,
             'nome': nome,
