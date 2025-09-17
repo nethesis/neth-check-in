@@ -20,21 +20,16 @@ echo
 echo "Generating SQL from $OUT_CSV"
 python3 "$SCRIPT_DIR/csv_loader.py" "$OUT_CSV"
 
-echo "Pushing IDs to CodeREADr from $OUT_CSV. This action will, by default, clear the remote CodeREADr database before uploading."
-echo "Uploading to CodeREADr (non-interactive)."
+echo "Pushing IDs to CodeREADr from $OUT_CSV."
 # Require environment variables for CodeREADr credentials (fail early if missing)
 if [ -z "${CODEREADR_API_KEY:-}" ] || [ -z "${CODEREADR_DATABASE_ID:-}" ]; then
-	echo "ERROR: CODEREADR_API_KEY and CODEREADR_DATABASE_ID must be set in the environment to perform the upload." >&2
-	echo "Set them and re-run the script, or run codereadr_push.py manually with the --api-key and --database-id flags." >&2
-	exit 1
+	echo "Upload failed: CODEREADR_API_KEY and CODEREADR_DATABASE_ID must be set in the environment to perform the upload." >&2
+else
+	python3 "$SCRIPT_DIR/codereadr_push.py" "$OUT_CSV"
+	echo "Upload finished. Check script output for status."
 fi
 
-python3 "$SCRIPT_DIR/codereadr_push.py" "$OUT_CSV"
-echo "Upload finished. Check script output for status."
 
-echo
-echo "SQL generated. You should now import the generated .sql file into your MySQL instance (phpMyAdmin or CLI)."
-echo
 SQL_FILE="${OUT_CSV%.*}.sql"
 # Attempt to automatically import into the running DB container named 'neth-check-in_db_1'.
 # Priority: podman -> odman -> docker. If the container is running we execute the import, otherwise we print the command.
@@ -53,11 +48,11 @@ if [ -n "$RUNNER" ]; then
 	if $RUNNER ps --format '{{.Names}}' 2>/dev/null | grep -xq "$CONTAINER_NAME"; then
 		echo "Container $CONTAINER_NAME is running under $RUNNER — importing SQL now."
 		# Execute the import via the detected runtime (non-interactive)
-		$RUNNER exec -i "$CONTAINER_NAME" mysql -u nethcheckin -pnethcheckin nethcheckin < "$SQL_FILE"
+		$RUNNER exec -i "$CONTAINER_NAME" mysql --default-character-set=utf8 -u nethcheckin -pnethcheckin nethcheckin < "$SQL_FILE"
 		echo "Import finished (executed with $RUNNER)."
 	else
 		echo "Container $CONTAINER_NAME is not running under $RUNNER. To import manually, run:" 
-		echo "  $RUNNER exec -i $CONTAINER_NAME mysql -u nethcheckin -pnethcheckin nethcheckin < $SQL_FILE"
+		echo "  $RUNNER exec -i $CONTAINER_NAME mysql --default-character-set=utf8 -u nethcheckin -pnethcheckin nethcheckin < $SQL_FILE"
 	fi
     echo
     echo "Done."
@@ -66,7 +61,7 @@ else
     echo "A MANUAL step is REQUIRED!"
     echo "Import the SQL file $SQL_FILE into your MySQL instance using one of the following methods:"
     echo
-    echo "  1) CLI: mysql -u USER -p nethcheckin nethcheckin < $SQL_FILE"
+    echo "  1) CLI:  mysql --default-character-set=utf8 -u nethcheckin -pnethcheckin nethcheckin < $SQL_FILE"
     echo "  2) GUI: use phpMyAdmin (http://localhost:8081) to import the file $SQL_FILE"
 fi
 

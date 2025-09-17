@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `iscritti` (
   `agency` varchar(255) DEFAULT NULL,
   `id` bigint(12) NOT NULL,
   `cod_partecipante` bigint(25) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Indexes for dumped tables
