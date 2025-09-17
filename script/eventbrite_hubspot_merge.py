@@ -47,7 +47,6 @@ from typing import Dict, List, Tuple, Optional
 
 REQUIRED_EVENTBRITE_FIELDS = ["Ordine n.", "Nome", "Cognome", "E-mail", "Partecipante n."]
 HUBSPOT_EMAIL_FIELD = "E-mail"
-HUBSPOT_TYPE_FIELD = "Tipo Lead AC"
 HUBSPOT_COMPANY_FIELD = "Nome azienda"
 
 OUTPUT_COLUMNS = ["ordine","nome","cognome","email","sala","tipo","agency","id"]
@@ -100,17 +99,6 @@ def choose_sala(row: Dict[str,str]) -> str:
             return val
     return ''
 
-
-def derive_tipo(hs_row: Optional[Dict[str,str]]) -> str:
-    if not hs_row:
-        return "Partner"
-    tipo_lead = (hs_row.get(HUBSPOT_TYPE_FIELD) or '').strip().lower()
-    if tipo_lead == 'prospect':
-        return "Prospect"
-    # treat other types as Partner (could extend logic)
-    return "Partner"
-
-
 def load_eventbrite(path: str) -> Tuple[List[Dict[str,str]], List[str]]:
     if not os.path.isfile(path):
         raise FileNotFoundError(f"Eventbrite CSV not found: {path}")
@@ -139,7 +127,7 @@ def build_output_rows(eb_rows: List[Dict[str,str]], hs_index: Dict[str,Dict[str,
         afternoon_value = (r.get("Parteciperò alla sessione pomeridiana | 10 ottobre") or '').strip()
         if afternoon_value == "Sessione commerciale: novità, case study e strumenti per la vendita":
             sala = "Sala Piazza"
-        if sala == '':
+        if not sala:
             missing_sala += 1
             if not sala_raw:
                 logging.debug("Attendee '%s %s' (%s) has empty 'sala' field", nome, cognome, email)
@@ -147,8 +135,10 @@ def build_output_rows(eb_rows: List[Dict[str,str]], hs_index: Dict[str,Dict[str,
                 logging.warning("Attendee '%s %s' (%s) has empty 'sala' field. Original sala was: %s", nome, cognome, email, sala_raw)
         agency = (r.get("Azienda") or '').strip()
         eid = (r.get("Partecipante n.") or '').strip()
-        hs_row = hs_index.get(email.lower()) if email else None
-        tipo = derive_tipo(hs_row)
+        if hs_index.get(email.lower()) is not None:
+            tipo = "Prospect"
+        else:
+            tipo = "Partner"
         if not agency and hs_row:
             agency = (hs_row.get(HUBSPOT_COMPANY_FIELD) or '').strip()
         if not eid:
